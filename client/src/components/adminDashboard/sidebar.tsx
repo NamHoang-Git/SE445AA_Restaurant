@@ -22,7 +22,7 @@ import {
     TooltipProvider,
 } from '@/components/ui/tooltip';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '@/assets/logo.png';
 
 const navigation = [
     { name: 'Trang quản trị', href: '/admin/dashboard', icon: Home },

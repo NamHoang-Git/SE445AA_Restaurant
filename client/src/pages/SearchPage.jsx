@@ -10,8 +10,6 @@ import AxiosToastError from '../utils/AxiosToastError';
 import NoData from '../components/NoData';
 import Search from '@/components/Search';
 import ProductCard from '@/components/product/product-card';
-import LiquidEther from '@/components/LiquidEther';
-import GlareHover from '@/components/GlareHover';
 import { Button } from '@/components/ui/button';
 import { RiResetLeftFill } from 'react-icons/ri';
 import { Label } from '@/components/ui/label';
@@ -23,6 +21,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import LiquidEther from '@/components/animation/LiquidEther';
+import GlareHover from '@/components/animation/GlareHover';
 
 const SearchPage = () => {
     const [data, setData] = useState([]);

@@ -3,11 +3,11 @@ import React from 'react';
 const Loading = () => {
     return (
         <div className="flex justify-center items-center gap-1 w-full">
-            <span className="sm:text-[15px] sm:block hidden font-bold text-foreground">Loading...</span>
+            <span className="sm:text-[15px] sm:block hidden font-bold text-background">Loading...</span>
             <div role="status">
                 <svg
                     aria-hidden="true"
-                    className="w-4 text-foreground animate-spin decoration-foreground fill-foreground"
+                    className="w-4 text-background animate-spin decoration-background fill-background"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

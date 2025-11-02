@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { Card } from '../../components/ui/card';
+import GradientText from '../animation/GradientText';
 // import logo from '../../assets/Apple-iPhone-17-Pro.jpg';
-import GradientText from '../GradientText';
 interface FooterContent {
     tagline: string;
     copyright: string;

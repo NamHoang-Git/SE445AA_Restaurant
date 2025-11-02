@@ -3,15 +3,20 @@
 @tailwind utilities;
 
 @keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .animate-gradient {
-  animation: gradient 8s linear infinite;
+    animation: gradient 8s linear infinite;
 }
-
 
 @custom-variant dark (&:is(.dark *));
 
@@ -19,6 +24,7 @@
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-active: var(--active);
+    --color-text: var(--text);
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
     --color-popover: var(--popover);
@@ -65,6 +71,9 @@
     :root {
         /* --background: 48 100% 96%; */
         --background: 0 0% 100%;
+        --base-color: 22 78% 26%;
+        --highlight: 0 72% 51%;
+        --highlight-2: 0 0% 100%;
         --foreground: 260 10% 20%;
         --active: 0 0% 89.8%;
         --card: 0 0% 100%;
@@ -90,9 +99,17 @@
         --chart-4: 43 74% 66%;
         --chart-5: 27 87% 67%;
         --radius: 0.5rem;
+
+        --ether-1: #fff7ed;
+        --ether-2: #ffd6a5;
+        --ether-3: #ffead0;
     }
     .dark {
         --background: 224 71% 4%;
+        --base-color: 0 0% 100%;
+        --highlight: 84 81% 68%;
+        --highlight-2: 84 81% 68%;
+
         --foreground: 213 31% 91%;
         --active: 0 0% 14.9%;
         --card: 224 71% 4%;
@@ -126,6 +143,10 @@
         --chart-3: 30 80% 55%;
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
+
+        --ether-1: #cbb3a7;
+        --ether-2: #a6b1e1;
+        --ether-3: #b7cadb;
     }
 }
 
@@ -189,6 +210,13 @@ body {
 }
 
 /* Styles */
+.backdrop-blur {
+    backdrop-filter: blur(4px) saturate(200%);
+    background: #ffffff0f;
+    border: 1px solid #ffffff1a;
+    box-shadow: 0 2px 12px #00000014, inset 0 1px #ffffff26;
+}
+
 .liquid-glass-header {
     backdrop-filter: blur(20px) saturate(180%);
     background: rgba(120, 53, 15, 0.6);

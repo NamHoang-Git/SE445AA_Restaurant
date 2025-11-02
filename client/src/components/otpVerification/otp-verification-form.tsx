@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useRef, useState } from 'react';
-import GlareHover from '../GlareHover';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from '@/utils/Axios';
 import SummaryApi from '@/common/SummaryApi';
 import toast from 'react-hot-toast';
 import AxiosToastError from '@/utils/AxiosToastError';
 import Loading from '../Loading';
+import GlareHover from '../animation/GlareHover';
 
 export function OtpVerificationForm({
     className,
@@ -69,7 +69,7 @@ export function OtpVerificationForm({
     return (
         <form
             className={cn(
-                'flex flex-col gap-6 font-bold text-red-950',
+                'flex flex-col gap-6 font-bold text-foreground',
                 className
             )}
             {...props}
@@ -119,20 +119,20 @@ export function OtpVerificationForm({
                 </div>
 
                 <GlareHover
-                    glareColor="#b91c1c"
-                    background="#fff"
-                    borderColor="#fff"
+                    background="transparent"
                     glareOpacity={0.3}
                     glareAngle={-30}
                     glareSize={300}
                     transitionDuration={800}
                     playOnce={false}
+                    className={`${
+                        !valideValue ? 'cursor-not-allowed' : 'cursor-pointer'
+                    }`}
                 >
                     <Button
                         disabled={!valideValue}
                         type="submit"
-                        className="w-full h-12 text-sm font-bold text-red-700 hover:opacity-90 shadow-none cursor-pointer
-                        bg-amber-50 border-amber-50"
+                        className="bg-foreground w-full h-12 font-bold"
                     >
                         {loading ? <Loading /> : 'Xác nhận OTP'}
                     </Button>
@@ -142,7 +142,7 @@ export function OtpVerificationForm({
                 Nhớ mật khẩu?{' '}
                 <Link
                     to={'/login'}
-                    className="p-0 h-auto text-sm hover:text-opacity-80 font-medium cursor-pointer text-red-700"
+                    className="p-0 h-auto text-sm hover:text-opacity-80 font-medium cursor-pointer text-highlight"
                 >
                     Quay lại đăng nhập.
                 </Link>

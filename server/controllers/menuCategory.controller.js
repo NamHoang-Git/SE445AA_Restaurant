@@ -3,7 +3,7 @@ import ProductModel from '../models/product.model.js';
 
 export const addCategoryController = async (req, res) => {
     try {
-        const { name, image, description, video } = req.body
+        const { name, image, description } = req.body
 
         if (!name || !image) {
             return res.status(400).json({
@@ -30,7 +30,6 @@ export const addCategoryController = async (req, res) => {
             name,
             image,
             description: description || '',
-            video: video || ''
         })
 
         const saveCategory = await addCategory.save()
@@ -59,7 +58,7 @@ export const addCategoryController = async (req, res) => {
     }
 }
 
-export const getMenuCategoryController = async (req, res) => {
+export const getCategoryController = async (req, res) => {
     try {
         const data = await MenuCategoryModel.find().sort({ createdAt: -1 })
 

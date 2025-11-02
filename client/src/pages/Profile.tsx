@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
@@ -23,11 +23,10 @@ import fetchUserDetails from '@/utils/fetchUserDetails';
 import { setUserDetails, updatedAvatar } from '@/store/userSlice';
 import { UserState } from '@/store/store';
 import AxiosToastError from '@/utils/AxiosToastError';
-import LiquidEther from '@/components/LiquidEther';
-import GlareHover from '@/components/GlareHover';
 import Loading from '@/components/Loading';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import GlareHover from '@/components/animation/GlareHover';
 
 interface UserData {
     name: string;
@@ -227,254 +226,222 @@ const Profile: React.FC = () => {
     };
 
     return (
-        <div className="relative">
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <LiquidEther
-                    colors={['#CBB3A7', '#A6B1E1', '#B7CADB']}
-                    isViscous={false}
-                    iterationsViscous={8}
-                    iterationsPoisson={8}
-                    resolution={0.2}
-                    autoDemo={true}
-                    autoSpeed={0.2}
-                    autoRampDuration={1}
-                    style={{ width: '100%', height: '100%' }}
-                />
-            </div>
-            <div className="container mx-auto grid gap-2 z-10 relative">
-                <Tabs defaultValue="account" className="space-y-2">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="account">Tài Khoản</TabsTrigger>
-                        <TabsTrigger value="password">Đổi Mật Khẩu</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="account">
-                        <Card className="space-y-4 py-6">
-                            <form onSubmit={handleUpdateProfile}>
-                                <CardHeader className="pb-6">
-                                    <CardTitle className="text-lg font-bold uppercase">
-                                        Tài khoản
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Quản lý thông tin tài khoản
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="space-y-4">
-                                        <Label>Avatar Hiện Tại</Label>
-                                        <div className="grid justify-items-center justify-start gap-2.5">
-                                            <div className="flex items-center space-x-4">
-                                                <Avatar className="h-20 w-20">
-                                                    <AvatarImage
-                                                        src={
-                                                            user?.avatar ||
-                                                            defaultAvatar
-                                                        }
-                                                        alt={
-                                                            user?.name || 'User'
-                                                        }
-                                                    />
-                                                    <AvatarFallback>
-                                                        {(user?.name || 'U')
-                                                            .split(' ')
-                                                            .map((n) => n[0])
-                                                            .join('')}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                            </div>
-                                            <div>
-                                                <Label
-                                                    htmlFor="uploadProfile"
-                                                    className="text-sm border border-primary rounded-lg px-2 py-1 cursor-pointer hover:opacity-80"
-                                                >
-                                                    {loading
-                                                        ? 'Đang tải lên...'
-                                                        : 'Chọn ảnh'}
-                                                </Label>
-                                                <Input
-                                                    onChange={
-                                                        handleUploadAvatar
+        <div className="container mx-auto grid gap-2 z-10">
+            <Tabs defaultValue="account" className="space-y-2">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="account">Tài Khoản</TabsTrigger>
+                    <TabsTrigger value="password">Đổi Mật Khẩu</TabsTrigger>
+                </TabsList>
+                <TabsContent value="account">
+                    <Card className="space-y-4 py-6">
+                        <form onSubmit={handleUpdateProfile}>
+                            <CardHeader className="pb-6">
+                                <CardTitle className="text-lg text-highlight font-bold uppercase">
+                                    Tài khoản
+                                </CardTitle>
+                                <CardDescription>
+                                    Quản lý thông tin tài khoản
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-4">
+                                    <Label>Avatar Hiện Tại</Label>
+                                    <div className="grid justify-items-center justify-start gap-2.5">
+                                        <div className="flex items-center space-x-4">
+                                            <Avatar className="h-20 w-20">
+                                                <AvatarImage
+                                                    src={
+                                                        user?.avatar ||
+                                                        defaultAvatar
                                                     }
-                                                    type="file"
-                                                    accept="image/*"
-                                                    id="uploadProfile"
-                                                    className="hidden"
-                                                    disabled={loading}
+                                                    alt={user?.name || 'User'}
                                                 />
-                                            </div>
+                                                <AvatarFallback>
+                                                    {(user?.name || 'U')
+                                                        .split(' ')
+                                                        .map((n) => n[0])
+                                                        .join('')}
+                                                </AvatarFallback>
+                                            </Avatar>
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="full-name">
-                                            Họ và Tên
-                                        </Label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Nhập họ và tên"
-                                            value={userData.name}
-                                            name="name"
-                                            onChange={handleOnChange}
-                                            required
-                                            spellCheck={false}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            type="email"
-                                            value={userData.email}
-                                            name="email"
-                                            onChange={handleOnChange}
-                                            required
-                                            disabled
-                                            spellCheck={false}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">
-                                            Số Điện Thoại
-                                        </Label>
-                                        <Input
-                                            type="tel"
-                                            placeholder="Nhập số điện thoại"
-                                            value={userData.mobile}
-                                            name="mobile"
-                                            onChange={(e) => {
-                                                handleOnChange(e);
-                                                // Clear error when user starts typing
-                                                if (mobileError) {
-                                                    validateMobile(
-                                                        e.target.value
-                                                    );
-                                                }
-                                            }}
-                                            onBlur={(e) =>
-                                                validateMobile(e.target.value)
-                                            }
-                                            required
-                                            spellCheck={false}
-                                            className={cn(
-                                                mobileError
-                                                    ? 'border-red-500 focus-visible:ring-red-500'
-                                                    : ''
-                                            )}
-                                        />
-                                        {mobileError && (
-                                            <p className="text-sm text-red-500 mt-1">
-                                                {mobileError}
-                                            </p>
-                                        )}
-                                    </div>
-                                </CardContent>
-                                <CardFooter className="pt-6">
-                                    <GlareHover
-                                        background="transparent"
-                                        glareOpacity={0.3}
-                                        glareAngle={-30}
-                                        glareSize={300}
-                                        transitionDuration={800}
-                                        playOnce={false}
-                                        className={`${
-                                            !mobileError && !isModified
-                                                ? 'cursor-not-allowed'
-                                                : 'cursor-pointer'
-                                        }`}
-                                    >
-                                        <Button
-                                            type="submit"
-                                            className="bg-foreground"
-                                        >
-                                            {loading ? (
-                                                <Loading />
-                                            ) : (
-                                                'Lưu Thay Đổi'
-                                            )}
-                                        </Button>
-                                    </GlareHover>
-                                </CardFooter>
-                            </form>
-                        </Card>
-                    </TabsContent>
-                    <TabsContent value="password">
-                        <Card className="space-y-4 py-6">
-                            <form onSubmit={handleSubmitChangePassword}>
-                                <CardHeader className="pb-6">
-                                    <CardTitle className="text-lg font-bold uppercase">
-                                        Xác minh danh tính
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Vì lý do bảo mật, vui lòng nhập mật khẩu
-                                        hiện tại của bạn để tiếp tục.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="currentPassword">
-                                            Mật Khẩu Hiện Tại
-                                        </Label>
-                                        <div className="relative">
-                                            <Input
-                                                type={
-                                                    showPassword
-                                                        ? 'text'
-                                                        : 'password'
-                                                }
-                                                name="currentPassword"
-                                                value={
-                                                    passwordData.currentPassword
-                                                }
-                                                onChange={handleOnChange}
-                                                placeholder="Nhập mật khẩu hiện tại"
-                                                required
-                                                className="text-sm"
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="sm"
-                                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
-                                                onClick={() =>
-                                                    setShowPassword(
-                                                        !showPassword
-                                                    )
-                                                }
+                                        <div>
+                                            <Label
+                                                htmlFor="uploadProfile"
+                                                className="text-sm border border-primary rounded-lg px-2 py-1 cursor-pointer hover:opacity-80"
                                             >
-                                                {showPassword ? (
-                                                    <EyeOff className="h-4 w-4" />
-                                                ) : (
-                                                    <Eye className="h-4 w-4" />
-                                                )}
-                                            </Button>
+                                                {loading
+                                                    ? 'Đang tải lên...'
+                                                    : 'Chọn ảnh'}
+                                            </Label>
+                                            <Input
+                                                onChange={handleUploadAvatar}
+                                                type="file"
+                                                accept="image/*"
+                                                id="uploadProfile"
+                                                className="hidden"
+                                                disabled={loading}
+                                            />
                                         </div>
                                     </div>
-                                </CardContent>
-                                <CardFooter className="pt-6">
-                                    {/* <Button className='bg-foreground'>Save Security Settings</Button> */}
-                                    <GlareHover
-                                        background="transparent"
-                                        glareOpacity={0.3}
-                                        glareAngle={-30}
-                                        glareSize={300}
-                                        transitionDuration={800}
-                                        playOnce={false}
-                                        className={`${
-                                            !mobileError && !isModified
-                                                ? 'cursor-not-allowed'
-                                                : 'cursor-pointer'
-                                        }`}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="full-name">Họ và Tên</Label>
+                                    <Input
+                                        type="text"
+                                        placeholder="Nhập họ và tên"
+                                        value={userData.name}
+                                        name="name"
+                                        onChange={handleOnChange}
+                                        required
+                                        spellCheck={false}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        type="email"
+                                        value={userData.email}
+                                        name="email"
+                                        onChange={handleOnChange}
+                                        required
+                                        disabled
+                                        spellCheck={false}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="phone">Số Điện Thoại</Label>
+                                    <Input
+                                        type="tel"
+                                        placeholder="Nhập số điện thoại"
+                                        value={userData.mobile}
+                                        name="mobile"
+                                        onChange={(e) => {
+                                            handleOnChange(e);
+                                            // Clear error when user starts typing
+                                            if (mobileError) {
+                                                validateMobile(e.target.value);
+                                            }
+                                        }}
+                                        onBlur={(e) =>
+                                            validateMobile(e.target.value)
+                                        }
+                                        required
+                                        spellCheck={false}
+                                        className={cn(
+                                            mobileError
+                                                ? 'border-red-500 focus-visible:ring-red-500'
+                                                : ''
+                                        )}
+                                    />
+                                    {mobileError && (
+                                        <p className="text-sm text-red-500 mt-1">
+                                            {mobileError}
+                                        </p>
+                                    )}
+                                </div>
+                            </CardContent>
+                            <CardFooter className="pt-6">
+                                <GlareHover
+                                    background="transparent"
+                                    glareOpacity={0.3}
+                                    glareAngle={-30}
+                                    glareSize={300}
+                                    transitionDuration={800}
+                                    playOnce={false}
+                                    className={`${
+                                        !mobileError && !isModified
+                                            ? 'cursor-not-allowed'
+                                            : 'cursor-pointer'
+                                    }`}
+                                >
+                                    <Button
+                                        disabled={!mobileError && !isModified}
+                                        type="submit"
+                                        className="bg-foreground"
                                     >
+                                        {loading ? <Loading /> : 'Lưu Thay Đổi'}
+                                    </Button>
+                                </GlareHover>
+                            </CardFooter>
+                        </form>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="password">
+                    <Card className="space-y-4 py-6">
+                        <form onSubmit={handleSubmitChangePassword}>
+                            <CardHeader className="pb-6">
+                                <CardTitle className="text-lg text-highlight font-bold uppercase">
+                                    Xác minh danh tính
+                                </CardTitle>
+                                <CardDescription>
+                                    Vì lý do bảo mật, vui lòng nhập mật khẩu
+                                    hiện tại của bạn để tiếp tục.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="currentPassword">
+                                        Mật Khẩu Hiện Tại
+                                    </Label>
+                                    <div className="relative">
+                                        <Input
+                                            type={
+                                                showPassword
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
+                                            name="currentPassword"
+                                            value={passwordData.currentPassword}
+                                            onChange={handleOnChange}
+                                            placeholder="Nhập mật khẩu hiện tại"
+                                            required
+                                            className="text-sm h-12"
+                                        />
                                         <Button
-                                            type="submit"
-                                            className="bg-foreground"
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
                                         >
-                                            {loading ? <Loading /> : 'Tiếp Tục'}
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4" />
+                                            ) : (
+                                                <Eye className="h-4 w-4" />
+                                            )}
                                         </Button>
-                                    </GlareHover>
-                                </CardFooter>
-                            </form>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
-            </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                            <CardFooter className="pt-6">
+                                {/* <Button className='bg-foreground'>Save Security Settings</Button> */}
+                                <GlareHover
+                                    background="transparent"
+                                    glareOpacity={0.3}
+                                    glareAngle={-30}
+                                    glareSize={300}
+                                    transitionDuration={800}
+                                    playOnce={false}
+                                    className={`${
+                                        !mobileError && !isModified
+                                            ? 'cursor-not-allowed'
+                                            : 'cursor-pointer'
+                                    }`}
+                                >
+                                    <Button
+                                        type="submit"
+                                        className="bg-foreground"
+                                    >
+                                        {loading ? <Loading /> : 'Tiếp Tục'}
+                                    </Button>
+                                </GlareHover>
+                            </CardFooter>
+                        </form>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 };

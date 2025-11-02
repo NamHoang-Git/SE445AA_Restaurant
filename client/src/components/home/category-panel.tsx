@@ -6,9 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
 import { valideURLConvert } from '../../utils/valideURLConvert';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import logo from '@/assets/logo2.png';
+import logo from '@/assets/logo.png';
+import { useDispatch } from 'react-redux';
+import { setAllCategory } from '@/store/productSlice';
+import Axios from '@/utils/Axios';
+import SummaryApi from '@/common/SummaryApi';
+import toast from 'react-hot-toast';
 
 export function CategoryPanel() {
+    const dispatch = useDispatch();
     const loadingCategory = useSelector(
         (state) => state.product.loadingCategory
     );
@@ -17,6 +23,24 @@ export function CategoryPanel() {
     const containerRef = useRef();
 
     const firstCategory = categoryData?.[0];
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await Axios({ ...SummaryApi.get_category });
+                const { data: responseData } = response;
+                if (responseData.success) {
+                    dispatch(setAllCategory(responseData.data));
+                }
+            } catch (error) {
+                toast.error('Không thể tải danh mục. Vui lòng thử lại sau.');
+            }
+        };
+
+        if (!categoryData || categoryData.length === 0) {
+            fetchCategory();
+        }
+    }, []);
 
     const handleRedirectProductListPage = (id, cat) => {
         const url = `/${valideURLConvert(cat)}-${id}`;
@@ -54,15 +78,13 @@ export function CategoryPanel() {
                             width={30}
                             height={30}
                         />
-                        <p className="text-sm uppercase tracking-[0.25em] text-red-700 font-bold">
+                        <p className="text-sm uppercase tracking-[0.25em] text-highlight font-bold">
                             EatEase Restaurant
                         </p>
                     </div>
-                    <h1 className="mt-3 text-center text-amber-900 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl uppercase grid gap-2">
+                    <h1 className="mt-3 text-center text-baseColor text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl uppercase grid gap-2">
                         <span className="block">Ẩm thực</span>
-                        <span className="block text-red-600">
-                            tinh hoa
-                        </span>
+                        <span className="block text-highlight">tinh hoa</span>
                         <span className="block">Hương vị đẳng cấp</span>
                     </h1>
                     <div className="mt-6">{buttonNew}</div>
@@ -139,7 +161,6 @@ export function CategoryPanel() {
                                                             i % gradients.length
                                                         ]
                                                     }
-                                                    videoSrc={category.video}
                                                     imageSrc={category.image}
                                                 />
                                             </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Divider = () => {
-    return <div className="p-[0.5px] bg-border my-2"></div>;
+    return <div className="p-[0.5px] bg-border"></div>;
 };
 
 export default Divider;

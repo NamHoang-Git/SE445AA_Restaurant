@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Instagram, Twitter, Youtube, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '@/assets/logo.png';
 
 interface FooterContent {
     tagline: string;
@@ -34,27 +35,32 @@ export function Footer() {
     }, []);
 
     return (
-        <section className="text-amber-950 font-bold liquid-glass-menu">
+        <section className="text-baseColor font-semibold liquid-glass-menu">
             {/* Footer */}
-            <footer className="border-t border-white/10 pb-20 md:pb-10">
+            <footer className="border-t border-highlight pb-20 md:pb-10">
                 <div className="container mx-auto px-4 py-10">
                     <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_1fr]">
                         {/* Brand */}
                         <div className="space-y-3">
                             <div className="flex items-center gap-1.5">
-                                {/* <Image src="/icons/skitbit-white.svg" alt="Skitbit logo" width={24} height={24} className="h-6 w-6" /> */}
-                                <span className="text-xl font-semibold text-red-700">
-                                    TechSpace
+                                <img
+                                    src={logo}
+                                    alt="Logo"
+                                    width={30}
+                                    height={30}
+                                />
+                                <span className="text-xl font-semibold text-highlight">
+                                    EatEase
                                 </span>
                             </div>
-                            <p className="max-w-sm text-sm">
+                            <p className="max-w-sm text-sm font-medium">
                                 {content.tagline}
                             </p>
                         </div>
 
                         {/* Navigation */}
                         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-2">
-                            <div>
+                            {/* <div>
                                 <h5 className="mb-2 text-xs font-semibold uppercase tracking-widest">
                                     Navigation
                                 </h5>
@@ -67,26 +73,22 @@ export function Footer() {
                                         'Blog',
                                         'Download',
                                     ].map((item) => (
-                                        <li key={item}>
-                                            {/* <Link href={`#${item.toLowerCase()}`} className="hover:text-lime-300">
-                        {item}
-                      </Link> */}
-                                        </li>
+                                        <li key={item}></li>
                                     ))}
                                 </ul>
-                            </div>
+                            </div> */}
                             <div>
-                                <h5 className="mb-2 text-xs font-semibold uppercase tracking-widest">
+                                <h5 className="mb-2 text-xs font-bold uppercase tracking-widest">
                                     Social media
                                 </h5>
-                                <ul className="space-y-2 text-sm text-red-700">
+                                <ul className="space-y-2 text-sm text-highlight">
                                     <li className="flex items-center gap-2">
                                         <Twitter className="h-4 w-4" />
                                         <a
                                             href="https://twitter.com/theskitbit"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="hover:text-lime-300"
+                                            className="hover:opacity-80"
                                             aria-label="Follow skitbit on Twitter"
                                         >
                                             X/Twitter
@@ -98,7 +100,7 @@ export function Footer() {
                                             href="https://www.youtube.com/@skitbitinternational"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="hover:text-lime-300"
+                                            className="hover:opacity-80"
                                             aria-label="Subscribe to skitbit on YouTube"
                                         >
                                             YouTube
@@ -110,7 +112,7 @@ export function Footer() {
                                             href="https://instagram.com/theskitbit"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="hover:text-lime-300"
+                                            className="hover:opacity-80"
                                             aria-label="Follow skitbit on Instagram"
                                         >
                                             Instagram
@@ -122,7 +124,7 @@ export function Footer() {
                                             href="https://threads.com/theskitbit"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="hover:text-lime-300"
+                                            className="hover:opacity-80"
                                             aria-label="Follow skitbit on Threads"
                                         >
                                             Threads
@@ -136,25 +138,19 @@ export function Footer() {
                     {/* Bottom bar */}
                     <div
                         className="mt-8 flex flex-col items-center justify-between gap-4 border-t
-                    border-red-700/40 pt-6 text-xs sm:flex-row"
+                    border-highlight pt-6 text-xs sm:flex-row"
                     >
                         <p>{content.copyright}</p>
                         <div className="flex items-center gap-6">
                             <a
                                 href="/revisions"
-                                className="hover:text-lime-300"
+                                className="hover:text-highlight"
                             >
                                 Revision Policy
                             </a>
-                            <a href="/t&c" className="hover:text-lime-300">
+                            <a href="/t&c" className="hover:text-highlight">
                                 Terms & Conditions
                             </a>
-                            {/* <Link href="/revisions" className="hover:text-lime-300">
-                Revision Policy
-              </Link>
-              <Link href="/t&c" className="hover:text-lime-300">
-                Terms & Conditions
-              </Link> */}
                         </div>
                     </div>
                 </div>

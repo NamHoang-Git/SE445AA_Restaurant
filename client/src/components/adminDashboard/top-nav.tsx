@@ -6,10 +6,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from './theme-toggle';
 import { useSelector } from 'react-redux';
-import defaultAvatar from '../assets/defaultAvatar.png';
-import UserMenu from './UserMenu';
+import defaultAvatar from '@/assets/defaultAvatar.png';
+import { ThemeToggle } from '../theme-toggle';
+import UserMenu from '../UserMenu';
 
 export function TopNav() {
     const user = useSelector((state: any) => state.user);

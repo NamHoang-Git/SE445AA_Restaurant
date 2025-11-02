@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import GlareHover from '../GlareHover';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Axios from '@/utils/Axios';
 import SummaryApi from '@/common/SummaryApi';
@@ -13,6 +12,7 @@ import AxiosToastError from '@/utils/AxiosToastError';
 import Loading from '../Loading';
 import { Eye, EyeOff } from 'lucide-react';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import GlareHover from '../animation/GlareHover';
 
 export function ResetPasswordForm({
     className,
@@ -224,21 +224,20 @@ export function ResetPasswordForm({
                     <Button
                         disabled={!valideValue}
                         type="submit"
-                        className="bg-foreground w-full"
+                        className="bg-foreground w-full h-12 font-bold"
                     >
                         {loading ? <Loading /> : 'Xác nhận'}
                     </Button>
                 </GlareHover>
             </div>
-            <div className="text-center text-sm flex justify-center items-center gap-2">
-                <IoIosArrowRoundBack size={28} />
-                <Link
-                    to={'/login'}
-                    className="p-0 h-auto text-sm hover:text-opacity-80 font-medium cursor-pointer"
-                >
-                    Quay lại đăng nhập.
-                </Link>
-            </div>
+            <Link
+                to={'/login'}
+                className="text-center text-sm flex justify-center items-center gap-2
+                hover:opacity-80 cursor-pointer text-highlight"
+            >
+                <IoIosArrowRoundBack size={28} className="mb-0.5" />
+                Quay lại.
+            </Link>
         </form>
     );
 }

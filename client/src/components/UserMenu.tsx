@@ -9,7 +9,6 @@ import { clearCart } from '../store/cartProduct';
 import { toast } from 'react-hot-toast';
 import AxiosToastError from './../utils/AxiosToastError';
 import { BiRefresh } from 'react-icons/bi';
-import GradientText from './GradientText';
 import { RootState } from '@/store/store';
 import {
     Home,
@@ -21,6 +20,7 @@ import {
 } from 'lucide-react';
 import defaultAvatar from '@/assets/defaultAvatar.png';
 import { RiExternalLinkFill } from 'react-icons/ri';
+import GradientText from './animation/GradientText';
 
 interface UserMenuProps {
     close: () => void;
@@ -153,7 +153,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
 
     return (
         <div className="bg-background text-muted-foreground rounded-lg shadow-lg overflow-hidden w-full">
-            <div className="p-4 pb-1">
+            <div className="p-4 py-2">
                 <div className="flex items-center gap-3">
                     <Link
                         to={'/dashboard/profile'}
@@ -241,7 +241,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
             <div className="pb-2">
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center px-4 py-1 text-sm font-medium
+                    className="w-full flex items-center justify-center px-4 py-2 text-sm font-medium
                     text-foreground hover:bg-secondary rounded-md hover:scale-[1.02] transition-all duration-300 ease-out"
                 >
                     Đăng xuất

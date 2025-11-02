@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import GlareHover from '../GlareHover';
 import { FaFacebookSquare, FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import Axios from '@/utils/Axios';
@@ -13,6 +12,7 @@ import SummaryApi from '@/common/SummaryApi';
 import toast from 'react-hot-toast';
 import AxiosToastError from '@/utils/AxiosToastError';
 import Loading from '../Loading';
+import GlareHover from '../animation/GlareHover';
 
 export function RegisterForm({
     className,
@@ -142,7 +142,7 @@ export function RegisterForm({
     return (
         <form
             className={cn(
-                'flex flex-col gap-6 font-bold text-red-950',
+                'flex flex-col gap-6 font-bold text-foreground',
                 className
             )}
             {...props}
@@ -151,7 +151,7 @@ export function RegisterForm({
             <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl">Tạo Tài Khoản</h1>
                 <p className="text-balance text-sm">
-                    Tạo một tài khoản mới để bắt đầu sử dụng TechSpace.
+                    Tạo một tài khoản mới để bắt đầu sử dụng EatEase.
                 </p>
             </div>
             <div className="grid gap-6">
@@ -257,55 +257,54 @@ export function RegisterForm({
                 </div>
 
                 <GlareHover
-                    glareColor="#b91c1c"
-                    background="#fff"
-                    borderColor="#fff"
+                    background="transparent"
                     glareOpacity={0.3}
                     glareAngle={-30}
                     glareSize={300}
                     transitionDuration={800}
                     playOnce={false}
+                    className={`${
+                        !valideValue ? 'cursor-not-allowed' : 'cursor-pointer'
+                    }`}
                 >
                     <Button
                         disabled={!valideValue}
                         type="submit"
-                        className="w-full h-12 text-sm font-bold text-red-700 hover:opacity-90 shadow-none cursor-pointer
-                        bg-amber-50 border-amber-50"
+                        className="bg-foreground w-full h-12 font-bold"
                     >
                         {loading ? <Loading /> : 'Đăng ký'}
                     </Button>
                 </GlareHover>
-
                 <>
                     <div className="relative">
                         <div className="relative text-center text-sm uppercase flex items-center justify-between px-1.5">
                             <div
                                 className="relative after:absolute after:inset-0 after:top-1/2 after:left-0 after:z-0 after:flex after:items-end
-                        after:border-t after:border-t-red-950 w-16 md:w-28 xl:w-56"
+                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
                             ></div>
                             <span className="relative z-10 px-2">
                                 Hoặc đăng ký bằng
                             </span>
                             <div
                                 className="relative after:absolute after:inset-0 after:top-1/2 after:right-0 after:z-0 after:flex after:items-start
-                        after:border-t after:border-t-red-950 w-16 md:w-28 xl:w-56"
+                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
                             ></div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 text-black">
+                    <div className="grid grid-cols-2 gap-4 text-foreground">
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-gray-200 hover:bg-amber-100 hover:text-gray-900 rounded-lg
-                            bg-white/90 shadow-none cursor-pointer"
+                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                        shadow-none cursor-pointer"
                         >
                             <FaGoogle className="mb-1" />
                             Google
                         </Button>
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-gray-200 hover:bg-amber-100 hover:text-gray-900 rounded-lg
-                            bg-white/90 shadow-none cursor-pointer"
+                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                        shadow-none cursor-pointer"
                         >
                             <FaFacebookSquare className="mb-1" />
                             Facebook
@@ -317,7 +316,7 @@ export function RegisterForm({
                 Bạn đã có tài khoản?{' '}
                 <Link
                     to={'/login'}
-                    className="p-0 h-auto text-sm hover:text-opacity-80 font-medium cursor-pointer text-red-700"
+                    className="p-0 h-auto text-sm hover:text-opacity-80 font-medium cursor-pointer text-highlight"
                 >
                     Đăng nhập.
                 </Link>

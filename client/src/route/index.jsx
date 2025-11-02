@@ -18,6 +18,7 @@ import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
+import MenuCategoryPage from '@/pages/MenuCategoryPage';
 
 const router = createBrowserRouter([
     {
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'categories',
-                        element: <Profile />
+                        element: <MenuCategoryPage />
                     },
                     {
                         path: 'vouchers',

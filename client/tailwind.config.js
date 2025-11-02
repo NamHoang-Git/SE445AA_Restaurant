@@ -44,6 +44,9 @@ export default {
           dark: '#991B1B'
         },
         background: 'hsl(var(--background))',
+        baseColor: 'hsl(var(--base-color))',
+        highlight: 'hsl(var(--highlight))',
+        highlight_2: 'hsl(var(--highlight-2))',
         foreground: 'hsl(var(--foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',

@@ -72,23 +72,23 @@ const SummaryApi = {
 
     // Menu Category
     add_category: {
-        url: '/api/category/add-category',
+        url: '/api/menu-category/add-category',
         method: 'post'
     },
     upload_image: {
         url: '/api/file/upload',
         method: 'post'
     },
-    get_menu_category: {
-        url: '/api/menu-category/get-menu-category',
+    get_category: {
+        url: '/api/menu-category/get-category',
         method: 'get'
     },
     update_category: {
-        url: '/api/category/update-category',
+        url: '/api/menu-category/update-category',
         method: 'put'
     },
     delete_category: {
-        url: '/api/category/delete-category',
+        url: '/api/menu-category/delete-category',
         method: 'delete'
     },
 

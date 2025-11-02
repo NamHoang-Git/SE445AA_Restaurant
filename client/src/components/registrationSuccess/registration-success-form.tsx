@@ -7,7 +7,7 @@ import {
     FaHome,
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
-import GlareHover from '../GlareHover';
+import GlareHover from '../animation/GlareHover';
 
 interface LocationState {
     email?: string;
@@ -33,25 +33,25 @@ const RegistrationSuccessForm: FC = () => {
     }
 
     return (
-        <div className="flex items-center justify-center text-sm text-red-950 font-bold">
+        <div className="flex items-center justify-center text-sm text-foreground font-bold">
             <div className="max-w-xl w-full space-y-8 sm:p-8 py-8 px-6">
                 <div className="text-center">
                     <div className="flex justify-center">
                         <div className="bg-green-100 rounded-full p-3">
-                            <FaCheckCircle className="h-12 w-12 text-lime-800" />
+                            <FaCheckCircle className="h-12 w-12 text-highlight" />
                         </div>
                     </div>
-                    <h2 className="mt-6 text-xl font-extrabold text-lime-800">
+                    <h2 className="mt-6 text-xl font-extrabold text-highlight">
                         Đăng ký thành công!
                     </h2>
                     <div className="grid gap-4">
-                        <p className="flex items-center justify-center gap-2 opacity-90 text-lime-800">
-                            <FaEnvelope className="text-lime-800 mb-0.5" />
+                        <p className="flex items-center justify-center gap-2 opacity-90 text-highlight">
+                            <FaEnvelope className="text-highlight mb-0.5" />
                             Vui lòng kiểm tra email của bạn
                         </p>
                         <p>
                             Chúng tôi đã gửi một liên kết xác nhận đến:
-                            <span className="block font-bold mt-1 text-red-700">
+                            <span className="block font-bold mt-1 text-highlight">
                                 {email}
                             </span>
                         </p>
@@ -59,7 +59,7 @@ const RegistrationSuccessForm: FC = () => {
                             Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết
                             xác nhận để kích hoạt tài khoản của bạn.
                         </p>
-                        <div className="py-5 px-2 bg-blue-50 liquid-glass-3 rounded-md text-xs text-red-700">
+                        <div className="py-5 px-2 bg-blue-50 liquid-glass-3 rounded-md text-xs text-highlight">
                             <p>Lưu ý:</p>
                             <ul className="mt-1 space-y-2 opacity-80">
                                 <li>
@@ -76,7 +76,7 @@ const RegistrationSuccessForm: FC = () => {
                         <p className="flex gap-1 items-center justify-center">
                             Không nhận được email?
                             <button
-                                className="font-medium text-red-700 hover:opacity-80"
+                                className="font-medium text-highlight hover:opacity-80"
                                 onClick={() => {
                                     // TODO: Implement resend verification email
                                     alert(
@@ -89,43 +89,37 @@ const RegistrationSuccessForm: FC = () => {
                         </p>
                     </div>
                     <div className="mt-6">
-                        <div className="grid grid-cols-2 w-full gap-4 text-red-700">
+                        <div className="grid grid-cols-2 w-full gap-4 font-medium text-background">
                             <GlareHover
-                                glareColor="#b91c1c"
-                                background="#fff"
-                                borderColor="#fff"
+                                background="transparent"
                                 glareOpacity={0.3}
                                 glareAngle={-30}
                                 glareSize={300}
                                 transitionDuration={800}
                                 playOnce={false}
-                                className="hover:text-red-400"
                             >
                                 <Link
                                     to="/"
-                                    className="flex items-center justify-center gap-2 h-12 border-gray-200 rounded-lg"
+                                    className="flex justify-center items-center gap-2 bg-foreground w-full h-12 font-bold"
                                 >
-                                    <FaHome className="mb-0.5" />
+                                    <FaHome size={14} className="mb-0.5" />
                                     Về trang chủ
                                 </Link>
                             </GlareHover>
 
                             <GlareHover
-                                glareColor="#b91c1c"
-                                background="#fff"
-                                borderColor="#fff"
+                                background="transparent"
                                 glareOpacity={0.3}
                                 glareAngle={-30}
                                 glareSize={300}
                                 transitionDuration={800}
                                 playOnce={false}
-                                className="hover:text-red-400"
                             >
                                 <Link
                                     to="/login"
-                                    className="flex items-center justify-center gap-2 h-12 border-gray-200 rounded-lg"
+                                    className="flex justify-center items-center gap-2 bg-foreground w-full h-12 font-bold"
                                 >
-                                    <FaArrowRight className="mb-0.5" />
+                                    <FaArrowRight size={14} className="mb-0.5" />
                                     Đi đến đăng nhập
                                 </Link>
                             </GlareHover>

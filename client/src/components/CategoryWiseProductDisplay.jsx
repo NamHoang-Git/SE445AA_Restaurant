@@ -9,7 +9,7 @@ import AxiosToastError from './../utils/AxiosToastError';
 import CardProduct from './CardProduct';
 import CardLoading from './CardLoading';
 import { ProductCard } from './product/product-card';
-import GradientText from './GradientText';
+import GradientText from './animation/GradientText';
 
 const CategoryWiseProductDisplay = ({ id, name }) => {
     const [data, setData] = useState([]);
