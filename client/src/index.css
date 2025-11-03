@@ -213,8 +213,13 @@ body {
 .backdrop-blur {
     backdrop-filter: blur(4px) saturate(200%);
     background: #ffffff0f;
-    border: 1px solid #ffffff1a;
     box-shadow: 0 2px 12px #00000014, inset 0 1px #ffffff26;
+}
+
+.backdrop-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: #ffffff14;
+    box-shadow: 0 4px 16px #0000001a, inset 0 1px #fff3;
 }
 
 .liquid-glass-header {

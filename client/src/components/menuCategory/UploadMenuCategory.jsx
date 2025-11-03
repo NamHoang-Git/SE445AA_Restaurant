@@ -41,22 +41,63 @@ const UploadMenuCategory = ({ close, fetchData }) => {
 
     const handleUploadCategoryImage = async (e) => {
         const file = e.target.files[0];
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
 
         if (!file) {
             return;
         }
 
-        setLoading(true);
-        const response = await uploadImage(file);
-        const { data: ImageResponse } = response;
-        setLoading(false);
+        // Check file size
+        if (file.size > maxSize) {
+            AxiosToastError({
+                response: { data: { message: 'Kích thước ảnh vượt quá 10MB' } },
+            });
+            return;
+        }
 
-        setData((prev) => {
-            return {
+        // Check file type
+        if (!file.type.match('image.*')) {
+            AxiosToastError({
+                response: {
+                    data: {
+                        message:
+                            'Vui lòng chọn file ảnh hợp lệ (PNG, JPG, JPEG)',
+                    },
+                },
+            });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await uploadImage(file);
+
+            if (
+                !response ||
+                !response.data ||
+                !response.data.data ||
+                !response.data.data.url
+            ) {
+                throw new Error('Lỗi khi tải lên ảnh. Vui lòng thử lại.');
+            }
+
+            const { data: ImageResponse } = response;
+
+            setData((prev) => ({
                 ...prev,
                 image: ImageResponse.data.url,
-            };
-        });
+            }));
+        } catch (error) {
+            console.error('Upload error:', error);
+            const errorMessage =
+                error.response?.data?.message ||
+                'Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại.';
+            AxiosToastError({ response: { data: { message: errorMessage } } });
+        } finally {
+            setLoading(false);
+            // Reset the input value to allow selecting the same file again if there was an error
+            e.target.value = '';
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -134,7 +175,6 @@ const UploadMenuCategory = ({ close, fetchData }) => {
                                 type="text"
                                 id="description"
                                 name="description"
-                                autoFocus
                                 value={data.description}
                                 onChange={handleOnChange}
                                 className="text-sm h-12"
@@ -152,7 +192,7 @@ const UploadMenuCategory = ({ close, fetchData }) => {
                                 className={`block border-2 border-dashed rounded-xl p-6 text-center cursor-pointer
                             transition-all duration-200 group ${
                                 data.image
-                                    ? 'border-green-200 bg-green-50'
+                                    ? 'border-green-300 bg-green-50'
                                     : 'border-gray-300 hover:border-red-500'
                             }`}
                             >
@@ -182,7 +222,7 @@ const UploadMenuCategory = ({ close, fetchData }) => {
                                                 Tải ảnh lên
                                             </p>
                                             <p className="sm:text-xs text-[10px] text-red-300">
-                                                PNG, JPG (tối đa 5MB)
+                                                PNG, JPG, JPEG (tối đa 10MB)
                                             </p>
                                         </div>
                                     </div>
@@ -199,24 +239,7 @@ const UploadMenuCategory = ({ close, fetchData }) => {
 
                         <Divider />
                         {/* Actions */}
-                        <CardFooter className="px-0 text-sm flex items-center justify-end gap-3">
-                            <GlareHover
-                                background="transparent"
-                                glareOpacity={0.3}
-                                glareAngle={-30}
-                                glareSize={300}
-                                transitionDuration={800}
-                                playOnce={false}
-                            >
-                                <Button
-                                    disabled={loading}
-                                    type="button"
-                                    onClick={close}
-                                    className="bg-highlight"
-                                >
-                                    Hủy
-                                </Button>
-                            </GlareHover>
+                        <CardFooter className="px-0 text-sm flex justify-end">
                             <GlareHover
                                 background="transparent"
                                 glareOpacity={0.3}

@@ -108,16 +108,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
     }, [user?._id, fetchUserPoints]);
 
     // Function to check if a path is active
-    const isActive = (path) => {
-        // Exact match for root path
-        if (
-            path === '/admin/dashboard' &&
-            location.pathname === '/admin/dashboard'
-        )
-            return true;
-        // Check if current path starts with the given path (for nested routes)
+    const isActive = (path: string): boolean => {
+        // Exact match for dashboard
+        if (path === '/admin/dashboard') {
+            return location.pathname === '/admin/dashboard';
+        }
+
+        // For other admin routes, check if current path starts with the path
+        if (path.startsWith('/admin/')) {
+            return location.pathname.startsWith(path);
+        }
+
+        // For non-admin routes, check for exact match or starts with path
         return (
-            location.pathname.startsWith(path) && path !== '/admin/dashboard'
+            location.pathname === path ||
+            (path !== '/' && location.pathname.startsWith(path))
         );
     };
 
@@ -229,10 +234,23 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
                         key={l.href}
                         to={l.href}
                         onClick={close}
-                        className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-secondary rounded-md hover:scale-[1.02] transition-all duration-300 ease-out"
+                        className={`flex items-center gap-2 px-4 py-3 text-sm rounded-md transition-all duration-300 ease-out
+                            ${
+                                isActive(l.href)
+                                    ? 'bg-primary/10 text-primary font-medium scale-[1.02]'
+                                    : 'hover:bg-secondary hover:scale-[1.02]'
+                            }`}
                     >
-                        <p className="text-foreground">{l.icon}</p>
-                        {l.label}
+                        <p
+                            className={
+                                isActive(l.href)
+                                    ? 'text-primary'
+                                    : 'text-foreground'
+                            }
+                        >
+                            {l.icon}
+                        </p>
+                        <span>{l.label}</span>
                     </Link>
                 ))}
             </div>

@@ -55,10 +55,11 @@ const ViewImage = ({ url, close }) => {
                     close();
                 }
             }}
-            className="fixed inset-0 bg-neutral-800 bg-opacity-75 z-50 p-4 flex items-center justify-center transition-opacity duration-300"
+            className="backdrop-blur z-50 fixed top-0 left-0 right-0 bottom-0 overflow-auto
+            flex items-center justify-center px-2 transition-transform duration-500 ease-in hover:scale-[1.01]"
         >
             <div
-                className={`relative bg-neutral-200 rounded-lg overflow-hidden transition-all duration-300 ${
+                className={`relative bg-input rounded-lg overflow-hidden transition-all duration-300 ${
                     isZoomed ? 'w-[95vw] h-[95vh]' : 'max-w-4xl max-h-[90vh]'
                 }`}
                 onClick={(e) => e.stopPropagation()}
@@ -69,7 +70,7 @@ const ViewImage = ({ url, close }) => {
                             e.stopPropagation();
                             toggleZoom();
                         }}
-                        className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                        className="p-2 bg-muted text-highlight rounded-full shadow-md hover:bg-muted-foreground transition-colors"
                         aria-label={isZoomed ? 'Zoom out' : 'Zoom in'}
                         title={isZoomed ? 'Zoom out' : 'Zoom in'}
                     >
@@ -84,7 +85,7 @@ const ViewImage = ({ url, close }) => {
                             e.stopPropagation();
                             close();
                         }}
-                        className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                        className="p-2 bg-muted text-highlight rounded-full shadow-md hover:bg-muted-foreground transition-colors"
                         aria-label="Close image viewer"
                         title="Close (Esc)"
                     >
@@ -138,7 +139,7 @@ const ViewImage = ({ url, close }) => {
                 </div>
 
                 {!isLoading && !hasError && (
-                    <div className="absolute bottom-2 left-0 right-0 text-center text-sm text-gray-600">
+                    <div className="absolute bottom-6 left-0 right-0 text-center text-sm text-muted-foreground">
                         {imageSize.width} × {imageSize.height}px
                     </div>
                 )}
