@@ -92,6 +92,24 @@ const SummaryApi = {
         method: 'delete'
     },
 
+    // Sub Menu Category
+    add_sub_menu_category: {
+        url: '/api/sub-menu-category/add-sub-menu-category',
+        method: 'post'
+    },
+    get_sub_menu_category: {
+        url: '/api/sub-menu-category/get-sub-menu-category',
+        method: 'get'
+    },
+    update_sub_menu_category: {
+        url: '/api/sub-menu-category/update-sub-menu-category',
+        method: 'put'
+    },
+    delete_sub_menu_category: {
+        url: '/api/sub-menu-category/delete-sub-menu-category',
+        method: 'delete'
+    },
+
     // Product
     add_product: {
         url: '/api/product/add-product',

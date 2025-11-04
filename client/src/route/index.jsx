@@ -19,6 +19,7 @@ import PublicRoute from './PublicRoute';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
 import MenuCategoryPage from '@/pages/MenuCategoryPage';
+import SubMenuCategoryPage from '@/pages/SubMenuCategoryPage';
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
                     {
                         path: 'categories',
                         element: <MenuCategoryPage />
+                    },
+                    {
+                        path: 'sub-categories',
+                        element: <SubMenuCategoryPage />
                     },
                     {
                         path: 'vouchers',

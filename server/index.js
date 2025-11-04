@@ -13,6 +13,7 @@ import cartRouter from "./route/cart.route.js";
 import orderRouter from './route/order.route.js';
 import voucherRouter from './route/voucher.route.js';
 import menuCategoryRouter from "./route/menuCategory.route.js";
+import subMenuCategoryRouter from './route/subMenuCategory.route.js';
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/user', userRouter);
 app.use('/api/menu-category', menuCategoryRouter);
+app.use('/api/sub-menu-category', subMenuCategoryRouter);
 app.use('/api/file', uploadRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);

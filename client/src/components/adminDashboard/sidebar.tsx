@@ -29,6 +29,7 @@ const navigation = [
     { name: 'Quản lý người dùng', href: '/admin/users', icon: Users2 },
     { name: 'Quản lý sản phẩm', href: '/admin/products', icon: Package },
     { name: 'Quản lý danh mục', href: '/admin/categories', icon: Layers },
+    { name: 'Quản lý danh mục phụ', href: '/admin/sub-categories', icon: Layers },
     { name: 'Mã giảm giá', href: '/admin/vouchers', icon: TicketPercent },
     { name: 'Báo cáo thống kê', href: '/admin/reports', icon: BarChart2 },
 ];

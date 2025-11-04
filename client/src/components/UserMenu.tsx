@@ -62,6 +62,11 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
             label: 'Quản lý danh mục',
         },
         {
+            href: '/admin/sub-categories',
+            icon: <Layers size={14} className="mb-0.5" />,
+            label: 'Quản lý danh mục phụ',
+        },
+        {
             href: '/admin/vouchers',
             icon: <TicketPercent size={14} className="mb-0.5" />,
             label: 'Mã giảm giá',

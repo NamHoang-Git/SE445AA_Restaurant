@@ -3,16 +3,13 @@ import { IoClose } from 'react-icons/io5';
 import Loading from './Loading';
 
 const ConfirmBox = ({
-    cancel,
     confirm,
     close,
     title,
     message,
     confirmText,
-    cancelText,
 }) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [cancelLoading, setCancelLoading] = useState(false);
 
     return (
         <section
@@ -26,7 +23,9 @@ const ConfirmBox = ({
             flex flex-col gap-4"
             >
                 <div className="flex justify-between items-center gap-4">
-                    <h1 className="font-semibold sm:text-lg text-base text-secondary-200">{title}</h1>
+                    <h1 className="font-semibold sm:text-lg text-base text-secondary-200">
+                        {title}
+                    </h1>
                     <button
                         onClick={close}
                         className="hover:text-secondary-200"
@@ -34,7 +33,9 @@ const ConfirmBox = ({
                         <IoClose size={25} />
                     </button>
                 </div>
-                <p className="my-2 sm:text-base text-sm font-medium">{message}</p>
+                <p className="my-2 sm:text-base text-sm font-medium">
+                    {message}
+                </p>
                 <div className="w-fit ml-auto flex items-center gap-3 sm:text-base text-sm bg-white">
                     <button
                         onClick={async () => {
@@ -45,26 +46,11 @@ const ConfirmBox = ({
                                 setConfirmLoading(false);
                             }
                         }}
-                        disabled={cancelLoading}
-                        className="bg-white text-green-600 hover:bg-green-500 hover:text-white
-                        font-semibold rounded px-6 py-1 border border-green-500 disabled:opacity-50"
-                    >
-                        {confirmLoading ? <Loading /> : confirmText}
-                    </button>
-                    <button
-                        onClick={async () => {
-                            setCancelLoading(true);
-                            try {
-                                await Promise.resolve(cancel());
-                            } finally {
-                                setCancelLoading(false);
-                            }
-                        }}
                         disabled={confirmLoading}
                         className="bg-white text-red-600 hover:bg-red-500 hover:text-white
                         font-semibold rounded px-6 py-1 border border-red-500 disabled:opacity-50"
                     >
-                        {cancelLoading ? <Loading /> : cancelText}
+                        {confirmLoading ? <Loading /> : confirmText}
                     </button>
                 </div>
             </div>
