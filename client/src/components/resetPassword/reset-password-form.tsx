@@ -154,10 +154,11 @@ export function ResetPasswordForm({
                             id="newPassword"
                             type={showNewPassword ? 'text' : 'password'}
                             name="newPassword"
+                            autoFocus
                             placeholder="Nhập mật khẩu mới"
                             onChange={handleChange}
                             value={data.newPassword}
-                            className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button
@@ -187,7 +188,7 @@ export function ResetPasswordForm({
                             placeholder="Nhập lại mật khẩu để xác nhận"
                             onChange={handleChange}
                             value={data.confirmNewPassword}
-                            className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button

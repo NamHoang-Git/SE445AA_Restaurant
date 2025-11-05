@@ -31,7 +31,7 @@ export function CategoryCard({
         <div className="block rounded-[28px] backdrop-glass border border-input p-2">
             <div>
                 <Card
-                    className="backdrop-glass rounded-3xl transition-all duration-300 overflow-hidden group relative"
+                    className="bg-input hover:bg-transparent rounded-3xl transition-all duration-300 overflow-hidden group relative"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
@@ -45,10 +45,10 @@ export function CategoryCard({
 
                     {/* Border glow */}
                     <div
-                        className={`absolute inset-0 rounded-3xl border-2 transition-all duration-500 ${
+                        className={`absolute inset-0 rounded-3xl border transition-all duration-500 ${
                             isHovered
                                 ? 'border-highlight/70 shadow-[0_0_15px_rgba(var(--highlight),0.3)]'
-                                : ''
+                                : 'border-transparent'
                         }`}
                     />
 

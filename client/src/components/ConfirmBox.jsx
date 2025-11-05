@@ -1,59 +1,101 @@
 import React, { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import Loading from './Loading';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import GlareHover from './animation/GlareHover';
 
 const ConfirmBox = ({
+    cancel,
     confirm,
     close,
     title,
     message,
     confirmText,
+    cancelText,
 }) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [cancelLoading, setCancelLoading] = useState(false);
 
     return (
         <section
             onClick={close}
-            className="bg-neutral-800 z-50 bg-opacity-60 fixed top-0 left-0 right-0 bottom-0 overflow-auto
-        flex items-center justify-center px-2"
+            className="bg-neutral-950/65 z-50 fixed top-0 left-0 right-0 bottom-0 overflow-auto
+            flex items-center justify-center px-2 transition-transform duration-500 ease-in hover:scale-[1.01]"
         >
-            <div
+            <Card
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white px-4 py-6 w-full max-w-md mx-auto rounded-md shadow-md
-            flex flex-col gap-4"
+                className="py-6 w-full max-w-md mx-auto rounded-md shadow-md grid gap-4 border-foreground"
             >
-                <div className="flex justify-between items-center gap-4">
-                    <h1 className="font-semibold sm:text-lg text-base text-secondary-200">
+                <CardHeader className="flex justify-between items-center gap-4">
+                    <CardTitle className="font-semibold sm:text-lg text-base text-secondary-200">
                         {title}
-                    </h1>
-                    <button
+                    </CardTitle>
+                    <Button
                         onClick={close}
-                        className="hover:text-secondary-200"
+                        className="bg-transparent hover:bg-transparent text-foreground
+                        hover:text-highlight"
                     >
-                        <IoClose size={25} />
-                    </button>
-                </div>
-                <p className="my-2 sm:text-base text-sm font-medium">
-                    {message}
-                </p>
-                <div className="w-fit ml-auto flex items-center gap-3 sm:text-base text-sm bg-white">
-                    <button
-                        onClick={async () => {
-                            setConfirmLoading(true);
-                            try {
-                                await Promise.resolve(confirm());
-                            } finally {
-                                setConfirmLoading(false);
-                            }
-                        }}
-                        disabled={confirmLoading}
-                        className="bg-white text-red-600 hover:bg-red-500 hover:text-white
-                        font-semibold rounded px-6 py-1 border border-red-500 disabled:opacity-50"
-                    >
-                        {confirmLoading ? <Loading /> : confirmText}
-                    </button>
-                </div>
-            </div>
+                        <IoClose />
+                    </Button>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                    <p className="sm:text-base text-sm font-medium">
+                        {message}
+                    </p>
+                    <div className="w-fit ml-auto flex items-center gap-4">
+                        <GlareHover
+                            background="transparent"
+                            glareOpacity={0.3}
+                            glareAngle={-30}
+                            glareSize={300}
+                            transitionDuration={800}
+                            playOnce={false}
+                            className="flex-1"
+                        >
+                            <Button
+                                onClick={async () => {
+                                    setConfirmLoading(true);
+                                    try {
+                                        await Promise.resolve(confirm());
+                                    } finally {
+                                        setConfirmLoading(false);
+                                    }
+                                }}
+                                disabled={cancelLoading}
+                                className="px-6 bg-highlight hover:bg-highlight_2 hover:text-highlight"
+                            >
+                                {confirmLoading ? <Loading /> : confirmText}
+                            </Button>
+                        </GlareHover>
+
+                        <GlareHover
+                            background="transparent"
+                            glareOpacity={0.3}
+                            glareAngle={-30}
+                            glareSize={300}
+                            transitionDuration={800}
+                            playOnce={false}
+                            className="flex-1"
+                        >
+                            <Button
+                                onClick={async () => {
+                                    setCancelLoading(true);
+                                    try {
+                                        await Promise.resolve(cancel());
+                                    } finally {
+                                        setCancelLoading(false);
+                                    }
+                                }}
+                                disabled={confirmLoading}
+                                className="px-6 bg-foreground"
+                            >
+                                {cancelLoading ? <Loading /> : cancelText}
+                            </Button>
+                        </GlareHover>
+                    </div>
+                </CardContent>
+            </Card>
         </section>
     );
 };

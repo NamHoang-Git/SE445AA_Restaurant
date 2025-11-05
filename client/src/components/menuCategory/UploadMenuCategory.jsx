@@ -139,7 +139,7 @@ const UploadMenuCategory = ({ close, fetchData }) => {
                         <Button
                             onClick={close}
                             className="bg-transparent hover:bg-transparent text-foreground
-                        hover:text-highlight_2 h-12"
+                        hover:text-highlight h-12"
                         >
                             <IoClose />
                         </Button>

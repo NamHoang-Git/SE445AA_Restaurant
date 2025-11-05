@@ -165,7 +165,7 @@ export function RegisterForm({
                         placeholder="Nhập tên của bạn"
                         onChange={handleChange}
                         value={data.name}
-                        className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>
@@ -175,11 +175,10 @@ export function RegisterForm({
                         id="email"
                         type="email"
                         name="email"
-                        autoFocus
                         placeholder="m@example.com"
                         onChange={handleChange}
                         value={data.email}
-                        className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>
@@ -189,11 +188,10 @@ export function RegisterForm({
                         id="mobile"
                         type="tel"
                         name="mobile"
-                        autoFocus
                         placeholder="Nhập số điện thoại của bạn"
                         onChange={handleChange}
                         value={data.mobile}
-                        className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>
@@ -207,7 +205,7 @@ export function RegisterForm({
                             placeholder="Nhập mật khẩu"
                             onChange={handleChange}
                             value={data.password}
-                            className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button
@@ -235,7 +233,7 @@ export function RegisterForm({
                             placeholder="Nhập lại mật khẩu để xác nhận"
                             onChange={handleChange}
                             value={data.confirmPassword}
-                            className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button
@@ -276,26 +274,19 @@ export function RegisterForm({
                     </Button>
                 </GlareHover>
                 <>
-                    <div className="relative">
-                        <div className="relative text-center text-sm uppercase flex items-center justify-between px-1.5">
-                            <div
-                                className="relative after:absolute after:inset-0 after:top-1/2 after:left-0 after:z-0 after:flex after:items-end
-                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
-                            ></div>
-                            <span className="relative z-10 px-2">
-                                Hoặc đăng ký bằng
-                            </span>
-                            <div
-                                className="relative after:absolute after:inset-0 after:top-1/2 after:right-0 after:z-0 after:flex after:items-start
-                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
-                            ></div>
-                        </div>
+                    <div
+                        className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center
+                    after:border-t after:border-foreground"
+                    >
+                        <span className="relative z-10 bg-background px-2 text-foreground uppercase">
+                            Hoặc đăng ký với
+                        </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-foreground">
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                            className="flex items-center gap-2 h-12 border-muted-foreground border-2 rounded-lg
                         shadow-none cursor-pointer"
                         >
                             <FaGoogle className="mb-1" />
@@ -303,7 +294,7 @@ export function RegisterForm({
                         </Button>
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                            className="flex items-center gap-2 h-12 border-muted-foreground border-2 rounded-lg
                         shadow-none cursor-pointer"
                         >
                             <FaFacebookSquare className="mb-1" />

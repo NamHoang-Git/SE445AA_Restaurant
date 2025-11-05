@@ -122,8 +122,7 @@ export function LoginForm({
             <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl">Đăng Nhập Vào Tài Khoản</h1>
                 <p className="text-balance text-sm">
-                    Nhập email của bạn bên dưới để đăng nhập vào tài khoản của
-                    bạn
+                    Nhập email của bạn bên dưới để đăng nhập vào tài khoản
                 </p>
             </div>
             <div className="grid gap-6 font-bold">
@@ -137,7 +136,7 @@ export function LoginForm({
                         placeholder="m@example.com"
                         onChange={handleChange}
                         value={data.email}
-                        className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-[3px] focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>
@@ -151,7 +150,7 @@ export function LoginForm({
                             placeholder="Nhập mật khẩu"
                             onChange={handleChange}
                             value={data.password}
-                            className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-[3px] focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button
@@ -169,7 +168,7 @@ export function LoginForm({
                         </Button>
                     </div>
                 </div>
-                <div className="flex items-center justify-between font-semibold text-foreground">
+                <div className="flex items-center justify-between font-semibold text-highlight">
                     <div className="flex items-center space-x-2">
                         <input
                             type="checkbox"
@@ -178,14 +177,14 @@ export function LoginForm({
                         />
                         <Label
                             htmlFor="remember"
-                            className="text-sm cursor-pointer"
+                            className="text-sm cursor-pointer hover:opacity-80"
                         >
                             Ghi nhớ đăng nhập
                         </Label>
                     </div>
                     <Link
                         to={'/forgot-password'}
-                        className="p-0 h-auto text-sm hover:text-opacity-80 cursor-pointer"
+                        className="p-0 h-auto text-sm hover:opacity-80 cursor-pointer"
                     >
                         Quên mật khẩu?
                     </Link>
@@ -211,26 +210,19 @@ export function LoginForm({
                     </Button>
                 </GlareHover>
                 <>
-                    <div className="relative">
-                        <div className="relative text-center text-sm uppercase flex items-center justify-between px-1.5">
-                            <div
-                                className="relative after:absolute after:inset-0 after:top-1/2 after:left-0 after:z-0 after:flex after:items-end
-                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
-                            ></div>
-                            <span className="relative z-10 px-2">
-                                Hoặc đăng nhập bằng
-                            </span>
-                            <div
-                                className="relative after:absolute after:inset-0 after:top-1/2 after:right-0 after:z-0 after:flex after:items-start
-                        after:border-t after:border-t-foreground w-16 md:w-28 xl:w-56"
-                            ></div>
-                        </div>
+                    <div
+                        className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center
+                    after:border-t after:border-foreground"
+                    >
+                        <span className="relative z-10 bg-background px-2 text-foreground uppercase">
+                            Hoặc đăng nhập với
+                        </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-foreground">
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                            className="flex items-center gap-2 h-12 border-muted-foreground border-2 rounded-lg
                         shadow-none cursor-pointer"
                         >
                             <FaGoogle className="mb-1" />
@@ -238,7 +230,7 @@ export function LoginForm({
                         </Button>
                         <Button
                             variant="outline"
-                            className="flex items-center gap-2 h-12 border-border border-2 rounded-lg
+                            className="flex items-center gap-2 h-12 border-muted-foreground border-2 rounded-lg
                         shadow-none cursor-pointer"
                         >
                             <FaFacebookSquare className="mb-1" />
@@ -251,7 +243,7 @@ export function LoginForm({
                 Bạn chưa có tài khoản?{' '}
                 <Link
                     to={'/register'}
-                    className="p-0 h-auto text-sm hover:text-opacity-80 cursor-pointer text-highlight"
+                    className="p-0 h-auto text-sm hover:opacity-80 cursor-pointer text-highlight"
                 >
                     Đăng ký ngay.
                 </Link>

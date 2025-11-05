@@ -110,7 +110,7 @@ const SubMenuCategoryPage = () => {
                     <img
                         src={row.image}
                         alt={row.name || 'Image'}
-                        className="w-12 h-12 object-cover rounded hover:scale-105 cursor-pointer"
+                        className="w-12 h-12 object-cover rounded hover:scale-105 cursor-pointer border border-muted-foreground/50"
                         onClick={() => setImageURL(row.image)}
                     />
                 ) : (

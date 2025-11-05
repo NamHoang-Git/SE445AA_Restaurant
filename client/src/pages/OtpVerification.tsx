@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { OtpVerificationForm } from '@/components/otpVerification/otp-verification-form';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 import { Link } from 'react-router-dom';
 
 const OtpVerificationPage: FC = () => {

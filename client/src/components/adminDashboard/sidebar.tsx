@@ -52,8 +52,8 @@ export function Sidebar() {
                     className={cn(
                         'flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
                         pathname === item.href
-                            ? 'bg-secondary text-secondary-foreground'
-                            : 'text-muted-foreground hover:bg-secondary hover:text-secondary-foreground',
+                            ? 'bg-muted-foreground/20 text-secondary-foreground'
+                            : 'text-muted-foreground hover:bg-muted-foreground/20 hover:text-secondary-foreground',
                         isCollapsed && 'justify-center px-2'
                     )}
                 >

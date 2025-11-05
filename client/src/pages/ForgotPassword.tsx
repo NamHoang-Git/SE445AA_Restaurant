@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ForgotPasswordForm } from '@/components/forgotPassword/forgot-password-form';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 import { Link } from 'react-router-dom';
 
 const ForgotPasswordPage: FC = () => {

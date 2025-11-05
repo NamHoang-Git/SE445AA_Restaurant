@@ -3,7 +3,7 @@ import React from 'react';
 const Loading = () => {
     return (
         <div className="flex justify-center items-center gap-1 w-full">
-            <span className="sm:text-[15px] sm:block hidden font-bold text-background">Loading...</span>
+            <span className="text-sm font-bold text-background">Loading...</span>
             <div role="status">
                 <svg
                     aria-hidden="true"

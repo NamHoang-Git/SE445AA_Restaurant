@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { TypeAnimation } from 'react-type-animation';
 import banner from '@/assets/register_banner.jpg';
 import { RegisterForm } from '@/components/register/register-form';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 import { Link } from 'react-router-dom';
 
 const RegisterPage: FC = () => {

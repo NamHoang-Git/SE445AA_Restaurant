@@ -41,25 +41,7 @@ export default function AdminDashboard() {
                             <TopNav />
                             <div className="container mx-auto p-6 max-w-7xl">
                                 <main className="w-full relative">
-                                    <div className="fixed inset-0 z-0 pointer-events-none">
-                                        <LiquidEther
-                                            colors={colors}
-                                            isViscous={false}
-                                            iterationsViscous={8}
-                                            iterationsPoisson={8}
-                                            resolution={0.2}
-                                            autoDemo={true}
-                                            autoSpeed={0.2}
-                                            autoRampDuration={1}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-                                        />
-                                    </div>
-                                    <div className='relative'>
-                                        <Outlet />
-                                    </div>
+                                    <Outlet />
                                 </main>
                             </div>
                         </div>

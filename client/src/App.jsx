@@ -79,8 +79,8 @@ function App() {
                                 iterationsPoisson={8}
                                 resolution={0.3}
                                 autoDemo={true}
-                                autoSpeed={0.4}
-                                autoRampDuration={1.2}
+                                autoSpeed={0.2}
+                                autoRampDuration={0.8}
                                 style={{ width: '100%', height: '100%' }}
                             />
                         </div>
@@ -97,22 +97,7 @@ function App() {
 
             {hideLayout && (
                 <main className="min-h-screen">
-                    <div className="fixed inset-0 z-0 pointer-events-none">
-                        <LiquidEther
-                            colors={colors}
-                            isViscous={false}
-                            iterationsViscous={8}
-                            iterationsPoisson={8}
-                            resolution={0.3}
-                            autoDemo={true}
-                            autoSpeed={0.4}
-                            autoRampDuration={1.2}
-                            style={{ width: '100%', height: '100%' }}
-                        />
-                    </div>
-                    <div className="relative">
-                        <Outlet />
-                    </div>
+                    <Outlet />
                 </main>
             )}
 

@@ -3,7 +3,7 @@ import { TypeAnimation } from 'react-type-animation';
 import { LoginForm } from '@/components/login/login-form';
 import banner from '@/assets/register_banner.jpg';
 import { Link } from 'react-router-dom';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo2.png';
 
 const LoginPage: FC = () => {
     return (

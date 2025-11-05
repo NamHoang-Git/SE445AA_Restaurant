@@ -94,7 +94,8 @@ export function ForgotPasswordForm({
                         placeholder="Nhập email của bạn"
                         onChange={handleChange}
                         value={data.email}
-                        className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg
+                        bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>

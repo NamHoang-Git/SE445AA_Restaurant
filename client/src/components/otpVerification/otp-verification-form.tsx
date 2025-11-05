@@ -110,8 +110,8 @@ export function OtpVerificationForm({
                                         }
                                     }}
                                     maxLength={1}
-                                    className="h-12 text-lime-200 border-gray-200 focus:ring-0 shadow-none rounded-lg
-                                    bg-black/50 focus:border-[#3F3FF3] no-spinner text-center"
+                                    className="h-12 text-highlight border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg
+                                    bg-background focus:border-[#3F3FF3] no-spinner text-center"
                                 />
                             );
                         })}
