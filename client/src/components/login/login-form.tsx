@@ -136,7 +136,7 @@ export function LoginForm({
                         placeholder="m@example.com"
                         onChange={handleChange}
                         value={data.email}
-                        className="h-12 border-muted-foreground border-[3px] focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                        className="h-12 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                         required
                     />
                 </div>
@@ -150,7 +150,7 @@ export function LoginForm({
                             placeholder="Nhập mật khẩu"
                             onChange={handleChange}
                             value={data.password}
-                            className="h-12 pr-10 border-muted-foreground border-[3px] focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
+                            className="h-12 pr-10 border-muted-foreground border-2 focus:ring-0 shadow-none rounded-lg bg-white/20 focus:border-[#3F3FF3]"
                             required
                         />
                         <Button

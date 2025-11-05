@@ -5,7 +5,7 @@ export const addSubMenuCategoryController = async (req, res) => {
     try {
         const { name, image, description, parentCategory } = req.body
 
-        if (!name || !image || !parentCategory[0]) {
+        if (!name || !image || !parentCategory) {
             return res.status(400).json({
                 message: "Vui lòng nhập các trường bắt buộc",
                 error: true,

@@ -1,47 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import SummaryApi from '@/common/SummaryApi';
-import Axios from '@/utils/Axios';
-import AxiosToastError from '@/utils/AxiosToastError';
-import { format } from 'date-fns';
-import { LuPencil, LuTrash } from 'react-icons/lu';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardFooter,
-} from '@/components/ui/card';
-import DynamicTable from '@/components/table/dynamic-table';
-import GlareHover from '@/components/animation/GlareHover';
-import UploadSubMenuCategoryModel from '@/components/subMenuCategory/UploadSubMenuCategory';
-import Loading from '@/components/Loading';
+import React, { useState } from 'react';
+import { IoAddSharp, IoClose } from 'react-icons/io5';
+import uploadImage from '../utils/UploadImage.js';
+import Axios from '../utils/Axios.js';
+import SummaryApi from '../common/SummaryApi.js';
+import AxiosToastError from '../utils/AxiosToastError.js';
+import Loading from './Loading.jsx';
+import { useSelector } from 'react-redux';
+import successAlert from '../utils/successAlert.js';
 
-const SubMenuCategoryPage = () => {
-    const [tableData, setTableData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [openUploadSubMenuCategory, setOpenUploadSubMenuCategory] =
-        useState(false);
+const EditSubCategory = ({ close, fetchData, data: SubCategoryData }) => {
+    const [data, setData] = useState({
+        _id: SubCategoryData._id,
+        name: SubCategoryData.name,
+        image: SubCategoryData.image,
+        category: SubCategoryData.category ? [...SubCategoryData.category] : [],
+    });
 
-    // Fetch submenu categories
-    const fetchSubMenuCategories = async () => {
+    const [loading, setLoading] = useState(false);
+    const [selectCategoryValue, setSelectCategoryValue] = useState('');
+
+    const allCategory = useSelector((state) => state.product.allCategory);
+
+    const handleOnChange = (e) => {
+        const { name, value } = e.target;
+
+        setData((prev) => {
+            return {
+                ...prev,
+                [name]: value,
+            };
+        });
+    };
+
+    const handleUploadSubCategoryImage = async (e) => {
+        const file = e.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        setLoading(true);
+        const response = await uploadImage(file);
+        const { data: ImageResponse } = response;
+        setLoading(false);
+
+        setData((prev) => {
+            return {
+                ...prev,
+                image: ImageResponse.data.url,
+            };
+        });
+    };
+
+    const handleRemoveCategorySelected = (categoryId) => {
+        const updated = data.category.filter((el) => el._id !== categoryId);
+
+        setData((prev) => ({
+            ...prev,
+            category: updated,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         try {
             setLoading(true);
             const response = await Axios({
-                ...SummaryApi.get_sub_menu_category,
+                ...SummaryApi.update_sub_category,
+                data: data,
             });
 
-            if (response.data.success) {
-                const formattedData = response.data.data.map((item, index) => ({
-                    id: index + 1,
-                    _id: item._id,
-                    name: item.name,
-                    date: format(new Date(item.createdAt), 'dd/MM/yyyy HH:mm'),
-                    image: item.image || '',
-                    category: item.parentCategory?.name || 'N/A',
-                }));
-                setTableData(formattedData);
+            const { data: responseData } = response;
+
+            if (responseData.success) {
+                successAlert(responseData.message);
+                close();
+                fetchData();
             }
         } catch (error) {
             AxiosToastError(error);
@@ -50,172 +85,183 @@ const SubMenuCategoryPage = () => {
         }
     };
 
-    // Handle edit
-    const handleEdit = (item) => {
-        // Implement edit functionality
-        console.log('Edit item:', item);
-    };
-
-    // Handle delete
-    const handleDelete = async (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa danh mục phụ này?')) {
-            try {
-                const response = await Axios({
-                    ...SummaryApi.delete_sub_menu_category,
-                    url: '/api/sub-menu-category/delete-sub-menu-category',
-                    data: { _id: id },
-                });
-
-                if (response.data.success) {
-                    fetchSubMenuCategories(); // Refresh the list
-                }
-            } catch (error) {
-                AxiosToastError(error);
-            }
-        }
-    };
-
-    // Initial fetch
-    useEffect(() => {
-        fetchSubMenuCategories();
-    }, []);
-
-    // Table columns
-    const columns = [
-        {
-            key: 'id',
-            label: 'ID',
-            type: 'number',
-            sortable: true,
-            format: (value) => value || '',
-        },
-        {
-            key: 'name',
-            label: 'Tên',
-            type: 'string',
-            sortable: true,
-            format: (value) => value || '',
-        },
-        {
-            key: 'date',
-            label: 'Ngày tạo',
-            type: 'string',
-            sortable: true,
-            format: (value) => value || '',
-        },
-        {
-            key: 'image',
-            label: 'Hình ảnh',
-            type: 'string',
-            sortable: false,
-            format: (value, row) => {
-                if (!row) return 'No Image';
-                return row.image ? (
-                    <img
-                        src={row.image}
-                        alt={row.name || 'Image'}
-                        className="w-12 h-12 object-cover rounded"
-                    />
-                ) : (
-                    'No Image'
-                );
-            },
-        },
-        {
-            key: 'category',
-            label: 'Danh mục',
-            type: 'string',
-            sortable: true,
-            format: (value) => value || 'N/A',
-        },
-        {
-            key: 'action',
-            label: 'Thao tác',
-            type: 'string',
-            sortable: false,
-            format: (_, row) =>
-                row ? (
-                    <div className="flex gap-2">
-                        <button
-                            className="p-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleEdit(row);
-                            }}
-                        >
-                            <LuPencil size={18} />
-                        </button>
-                        <button
-                            className="p-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(row._id);
-                            }}
-                        >
-                            <LuTrash size={18} />
-                        </button>
-                    </div>
-                ) : null,
-        },
-    ];
-
-    if (loading) {
-        return <Loading />;
-    }
-
     return (
-        <section className="container mx-auto grid gap-2 z-10">
-            {/* Header */}
-            <Card className="py-6 flex flex-col md:flex-row justify-between gap-6 border-card-foreground">
-                <CardHeader>
-                    <CardTitle className="text-lg text-highlight font-bold uppercase">
-                        Danh mục phụ
-                    </CardTitle>
-                    <CardDescription>
-                        Quản lý thông tin danh mục phụ
-                    </CardDescription>
-                </CardHeader>
-
-                <CardFooter className="justify-end">
-                    <GlareHover
-                        background="transparent"
-                        glareOpacity={0.3}
-                        glareAngle={-30}
-                        glareSize={300}
-                        transitionDuration={800}
-                        playOnce={false}
+        <section
+            className="fixed top-0 bottom-0 left-0 right-0
+        bg-neutral-800 z-50 bg-opacity-60 p-4 flex items-center justify-center"
+        >
+            <div className="bg-white max-w-4xl w-full p-4 rounded">
+                <div className="flex items-center justify-between">
+                    <h1 className="font-bold">Edit Sub Category</h1>
+                    <button
+                        onClick={close}
+                        className="text-neutral-900 w-fit block ml-auto"
                     >
-                        <Button
-                            onClick={() => setOpenUploadSubMenuCategory(true)}
-                            className="bg-foreground"
+                        <IoClose size={25} />
+                    </button>
+                </div>
+                <form
+                    action=""
+                    className="mt-6 mb-2 grid gap-6"
+                    onSubmit={handleSubmit}
+                >
+                    <div className="grid gap-2">
+                        <label id="name" htmlFor="name">
+                            Name (<span className="text-red-500">*</span>)
+                        </label>
+                        <input
+                            type="text"
+                            className="bg-blue-50 p-2 border rounded outline-none
+                            focus-within:border-primary-200"
+                            id="name"
+                            placeholder="Enter sub category name!"
+                            value={data.name}
+                            name="name"
+                            onChange={handleOnChange}
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <p>
+                            Image (<span className="text-red-500">*</span>)
+                        </p>
+                        <div className="flex gap-4 items-center flex-col lg:flex-row">
+                            <div
+                                className="bg-blue-50 p-2 h-36 w-full lg:w-36 border rounded
+                                flex items-center justify-center"
+                            >
+                                {data.image ? (
+                                    <img
+                                        src={data.image}
+                                        alt="subCategory"
+                                        className="w-full h-full object-scale-down"
+                                    />
+                                ) : (
+                                    <p className="text-sm text-neutral-500">
+                                        No Image
+                                    </p>
+                                )}
+                            </div>
+                            <label htmlFor="uploadSubCategoryImage">
+                                <div
+                                    className={`${
+                                        !data.name
+                                            ? 'bg-gray-300 text-white cursor-no-drop'
+                                            : 'bg-blue-400 text-white hover:bg-blue-600 cursor-pointer'
+                                    } px-3 py-1 text-sm rounded-md`}
+                                >
+                                    {loading ? (
+                                        <Loading />
+                                    ) : (
+                                        <IoAddSharp size={42} />
+                                    )}
+                                </div>
+                                <input
+                                    disabled={!data.name}
+                                    onChange={handleUploadSubCategoryImage}
+                                    type="file"
+                                    accept="image/*"
+                                    id="uploadSubCategoryImage"
+                                    className="hidden"
+                                />
+                            </label>
+                        </div>
+                    </div>
+                    <div className="grid gap-2">
+                        <label>
+                            Category (<span className="text-red-500">*</span>)
+                        </label>
+
+                        {/* Display Value */}
+                        <div
+                            className={`${
+                                data.category[0] ? 'flex' : 'hidden'
+                            } gap-4 flex-wrap`}
                         >
-                            Thêm Mới
-                        </Button>
-                    </GlareHover>
-                </CardFooter>
-            </Card>
+                            {data.category.map((cate) => {
+                                return (
+                                    <span
+                                        key={cate._id + 'selectedValue'}
+                                        className="bg-slate-200 shadow-md px-2 mx-1 flex items-center gap-2"
+                                    >
+                                        {cate.name}
+                                        <div
+                                            onClick={() =>
+                                                handleRemoveCategorySelected(
+                                                    cate._id
+                                                )
+                                            }
+                                            className="cursor-pointer hover:text-red-600"
+                                        >
+                                            <IoClose size={18} />
+                                        </div>
+                                    </span>
+                                );
+                            })}
+                        </div>
 
-            <Card className="space-y-4 py-6">
-                <CardContent>
-                    <DynamicTable
-                        data={tableData}
-                        columns={columns}
-                        pageSize={10}
-                        filterable={true}
-                        searchable={true}
-                        searchPlaceholder="Tìm kiếm danh mục phụ..."
-                    />
-                </CardContent>
-            </Card>
+                        {/* Select Category */}
+                        <select
+                            className={`${
+                                data.category[0] ? 'mt-1' : 'mt-0'
+                            } bg-blue-50 p-2 border rounded outline-none focus-within:border-primary-200`}
+                            value={selectCategoryValue}
+                            onChange={(e) => {
+                                const value = e.target.value;
 
-            {openUploadSubMenuCategory && (
-                <UploadSubMenuCategoryModel
-                    close={() => setOpenUploadSubMenuCategory(false)}
-                    fetchData={fetchSubMenuCategories}
-                />
-            )}
+                                if (!value) return;
+                                const categoryDetails = allCategory.find(
+                                    (el) => el._id == value
+                                );
+
+                                // Kiểm tra trùng lặp
+                                const alreadySelected = data.category.some(
+                                    (cate) => cate._id === value
+                                );
+
+                                if (alreadySelected) {
+                                    return;
+                                }
+
+                                setData((prev) => {
+                                    return {
+                                        ...prev,
+                                        category: [
+                                            ...prev.category,
+                                            categoryDetails,
+                                        ],
+                                    };
+                                });
+
+                                setSelectCategoryValue('');
+                            }}
+                        >
+                            <option value={''}>Select Category</option>
+                            {allCategory.map((category) => {
+                                return (
+                                    <option
+                                        value={category?._id}
+                                        key={category._id + 'subCategory'}
+                                    >
+                                        {category?.name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+
+                    <button
+                        className={`${
+                            data.name && data.image && data.category[0]
+                                ? 'bg-orange-600 text-white hover:bg-orange-500 cursor-pointer'
+                                : 'bg-gray-300 text-gray-700 font-semibold cursor-no-drop'
+                        } py-2 rounded-md`}
+                    >
+                        Update
+                    </button>
+                </form>
+            </div>
         </section>
     );
 };
 
-export default SubMenuCategoryPage;
+export default EditSubCategory;

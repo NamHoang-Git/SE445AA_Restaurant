@@ -145,7 +145,6 @@ const UploadMenuCategory = ({ close, fetchData }) => {
                         </Button>
                     </div>
                 </CardHeader>
-                <Divider />
 
                 <form onSubmit={handleSubmit}>
                     <CardContent className="py-4 space-y-5 text-sm">
