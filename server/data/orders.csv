@@ -1,0 +1,4 @@
+order_id,customer_id,product_id,product_name,quantity,unit_price,subtotal,discount,total,payment_method,payment_status,order_status,ordered_at,completed_at,voucher_id,table_number
+O1001,U001,P001,Cafe Sua,2,25000,50000,0,50000,CASH,PAID,COMPLETED,2025-11-01T09:20:00Z,2025-11-01T09:45:00Z,,A1
+O1002,U002,P002,Banh Mi Thit,1,35000,35000,5000,30000,CARD,PAID,COMPLETED,2025-11-02T12:05:00Z,2025-11-02T12:30:00Z,V001,B2
+O1003,U001,P003,Tra Dao,3,30000,90000,0,90000,MOMO,PAID,COMPLETED,2025-11-03T19:10:00Z,2025-11-03T19:40:00Z,,A3

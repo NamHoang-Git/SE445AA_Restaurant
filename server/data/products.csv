@@ -1,0 +1,4 @@
+product_id,name,price,discount,publish,category_ids,sub_category_id,slug,created_at
+P001,Cafe Sua,25000,0,true,drink,,cafe-sua,2025-10-01T09:00:00Z
+P002,Banh Mi Thit,35000,5000,true,food,,banh-mi-thit,2025-10-02T11:00:00Z
+P003,Tra Dao,30000,0,false,drink,,tra-dao,2025-10-03T15:30:00Z
