@@ -18,7 +18,17 @@ async function buildDimCustomer() {
         return new Map();
     }
 
-    const docs = users.map(u => ({
+    // DEDUPE THEO customer_id
+    const byCustomer = new Map();
+    for (const u of users) {
+        if (!u.customer_id) continue;
+        // nếu có nhiều bản ghi cùng customer_id, giữ bản đầu tiên
+        if (!byCustomer.has(u.customer_id)) {
+            byCustomer.set(u.customer_id, u);
+        }
+    }
+
+    const docs = [...byCustomer.values()].map(u => ({
         customer_id: u.customer_id,
         name: u.name,
         email: u.email,
@@ -28,7 +38,12 @@ async function buildDimCustomer() {
         created_at: u.created_at,
     }));
 
-    const inserted = await DimCustomer.insertMany(docs);
+    if (!docs.length) {
+        console.warn('⚠️ Không có dữ liệu hợp lệ để build dim_customer');
+        return new Map();
+    }
+
+    const inserted = await DimCustomer.insertMany(docs, { ordered: true });
     console.log(`✅ dim_customer inserted: ${inserted.length}`);
 
     // map customer_id -> _id
@@ -40,28 +55,43 @@ async function buildDimCustomer() {
 }
 
 async function buildDimMenuItem() {
-    console.log('🧱 Rebuild dim_menu_item...');
+    console.log("🧱 Rebuild dim_menu_item...");
     await DimMenuItem.deleteMany({});
 
     const products = await StagingProduct.find({}).lean();
     if (!products.length) {
-        console.warn('⚠️ staging_products trống');
+        console.warn("⚠️ staging_products trống");
         return new Map();
     }
 
-    const docs = products.map(p => ({
+    // DEDUPE THEO product_id
+    const byProduct = new Map();
+    for (const p of products) {
+        if (!p.product_id) continue;
+        // nếu có nhiều record cùng product_id, giữ bản đầu tiên
+        if (!byProduct.has(p.product_id)) {
+            byProduct.set(p.product_id, p);
+        }
+    }
+
+    const docs = [...byProduct.values()].map((p) => ({
         product_id: p.product_id,
         name: p.name,
         price: p.price,
         discount: p.discount,
         publish: p.publish,
-        category_ids: p.category_ids || [],
-        sub_category_id: p.sub_category_id || null,
-        slug: p.slug || null,
+        category_ids: p.category_ids,
+        sub_category_id: p.sub_category_id,
+        slug: p.slug,
         created_at: p.created_at,
     }));
 
-    const inserted = await DimMenuItem.insertMany(docs);
+    if (!docs.length) {
+        console.warn("⚠️ Không có dữ liệu hợp lệ để build dim_menu_item");
+        return new Map();
+    }
+
+    const inserted = await DimMenuItem.insertMany(docs, { ordered: true });
     console.log(`✅ dim_menu_item inserted: ${inserted.length}`);
 
     const map = new Map();
