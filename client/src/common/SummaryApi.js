@@ -212,7 +212,30 @@ const SummaryApi = {
     bulk_update_vouchers_status: {
         url: '/api/voucher/bulk-update-vouchers-status',
         method: 'put'
-    }
+    },
+
+    //elt
+    etl_summary: {
+        url: '/api/etl/summary',
+        method: 'get',
+    },
+
+    etl_status: {
+        url: '/api/etl/summary',
+        method: 'get',
+    },
+    etl_logs: {
+        url: '/api/etl/logs',
+        method: 'get',
+    },
+    run_etl: {
+        url: '/api/etl/run',
+        method: 'post',
+    },
+    etl_analytics: {
+        url: '/api/etl/analytics',
+        method: 'get',
+    },
 }
 
 export default SummaryApi

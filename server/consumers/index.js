@@ -10,6 +10,19 @@ import StagingWhImport from "../models/staging/stagingWhImport.model.js";
 import StagingWhExport from "../models/staging/stagingWhExport.model.js";
 import StagingError from "../models/staging/stagingError.model.js";
 
+import fs from "fs";
+import path from "path";
+
+const LOG_DIR = path.join(process.cwd(), "logs");
+if (!fs.existsSync(LOG_DIR)) {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
+}
+
+function writeConsumerLog(queue, msg) {
+    const logLine = `[${new Date().toISOString()}] [${queue}] ${msg}\n`;
+    fs.appendFileSync(path.join(LOG_DIR, "consumer.log"), logLine, "utf8");
+}
+
 import {
     validateUser,
     validateProduct,
@@ -22,8 +35,6 @@ const QUEUES = [
     { name: "staging_user", model: StagingUser, validate: validateUser },
     { name: "staging_product", model: StagingProduct, validate: validateProduct },
     { name: "staging_order", model: StagingOrderItem, validate: validateOrderItem },
-
-    // --- Kho ---
     { name: "staging_wh_import", model: StagingWhImport, validate: validateWhImport },
     { name: "staging_wh_export", model: StagingWhExport, validate: validateWhExport },
 ];
@@ -33,22 +44,26 @@ async function consumeQueue(channel, { name, model, validate }) {
     await channel.assertQueue(`error_${name}`, { durable: true });
 
     console.log(`👂 Listening on ${name}`);
+    writeConsumerLog(name, "Started listening");
 
     channel.consume(
         name,
         async (msg) => {
             if (!msg) return;
 
-            console.log('📩 RECEIVED FROM', name, 'RAW =', msg.content.toString());
+            const raw = msg.content.toString();
+            console.log("📩 RECEIVED FROM", name, "RAW =", raw);
+            writeConsumerLog(name, `RECEIVED: ${raw}`);
 
             try {
-                const raw = msg.content.toString();
                 const payload = JSON.parse(raw);
 
                 const { ok, errors, data } = validate(payload);
 
                 if (!ok) {
-                    console.warn(`⚠️  ${name} validation failed:`, errors.join("; "));
+                    const errMsg = `VALIDATION FAILED: ${errors.join("; ")}`;
+                    console.warn(`⚠️  ${name} ${errMsg}`);
+                    writeConsumerLog(name, errMsg);
 
                     await StagingError.create({
                         queue: name,
@@ -56,7 +71,6 @@ async function consumeQueue(channel, { name, model, validate }) {
                         errors,
                     });
 
-                    // gửi sang queue lỗi
                     channel.sendToQueue(
                         `error_${name}`,
                         Buffer.from(JSON.stringify({ payload, errors })),
@@ -69,12 +83,13 @@ async function consumeQueue(channel, { name, model, validate }) {
 
                 await model.create(data);
                 console.log(`✅ ${name}: saved`);
+                writeConsumerLog(name, `SAVED: ${JSON.stringify(data)}`);
 
                 channel.ack(msg);
             } catch (err) {
                 console.error(`❌ Error processing message from ${name}:`, err);
-                // tránh loop vô tận: n reject message
-                channel.nack(msg, false, false);
+                writeConsumerLog(name, `ERROR: ${err.message}`);
+                channel.nack(msg, false, false); // tránh loop vô hạn
             }
         },
         { noAck: false }
@@ -94,6 +109,7 @@ async function start() {
         }
     } catch (err) {
         console.error("🚨 Consumer crashed on start:", err);
+        writeConsumerLog("SYSTEM", `CRASH: ${err.message}`);
         process.exit(1);
     }
 }

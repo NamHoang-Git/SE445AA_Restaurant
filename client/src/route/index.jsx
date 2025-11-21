@@ -20,6 +20,10 @@ import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
 import MenuCategoryPage from '@/pages/MenuCategoryPage';
 import SubMenuCategoryPage from '@/pages/SubMenuCategoryPage';
+import LogsPage from '@/pages/LogsPage';
+import EtlMonitorPage from '@/pages/EtlMonitorPage';
+import ETLDashboard from '@/pages/ETLDashboard';
+import LogsViewer from '@/pages/LogsViewer';
 
 const router = createBrowserRouter([
     {
@@ -52,37 +56,37 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: 'dashboard',
-                        element: <Profile />
+                        element: <Profile />,
                     },
                     {
-                        path: 'profile',
-                        element: <Profile />
+                        path: 'logs',
+                        element: <LogsPage />,
                     },
                     {
                         path: 'users',
-                        element: <Profile />
+                        element: <Profile />,
                     },
                     {
                         path: 'products',
-                        element: <Profile />
+                        element: <Profile />,
                     },
                     {
                         path: 'categories',
-                        element: <MenuCategoryPage />
+                        element: <MenuCategoryPage />,
                     },
                     {
                         path: 'sub-categories',
-                        element: <SubMenuCategoryPage />
+                        element: <SubMenuCategoryPage />,
                     },
                     {
                         path: 'vouchers',
-                        element: <Profile />
+                        element: <Profile />,
                     },
                     {
                         path: 'reports',
-                        element: <Profile />
+                        element: <EtlMonitorPage />,
                     },
-                ]
+                ],
             },
             {
                 path: 'register',

@@ -1,52 +1,54 @@
+// scripts/transform_load.js
 import 'dotenv/config';
 import connectDB from '../config/connectDB.js';
-
 import StagingUser from '../models/staging/stagingUser.model.js';
 import StagingProduct from '../models/staging/stagingProduct.model.js';
 import StagingOrderItem from '../models/staging/stagingOrderItem.model.js';
 import DimCustomer from '../models/dw/dimCustomer.model.js';
 import DimMenuItem from '../models/dw/dimMenuItem.model.js';
 import FactOrderItem from '../models/dw/factOrderItem.model.js';
+import { CustomerTransformStrategy } from "../strategies/customerTransform.strategy.js";
+import { MenuItemTransformStrategy } from "../strategies/menuItemTransform.strategy.js";
+import { OrderItemTransformStrategy } from "../strategies/orderItemTransform.strategy.js";
+
+import fs from "fs";
+import path from "path";
+
+const LOG_DIR = path.join(process.cwd(), "logs");
+if (!fs.existsSync(LOG_DIR)) {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
+}
+
+function writeEtlLog(msg) {
+    const line = `[${new Date().toISOString()}] [ETL] ${msg}\n`;
+    fs.appendFileSync(path.join(LOG_DIR, "etl.log"), line, "utf8");
+}
 
 async function buildDimCustomer() {
-    console.log('🧱 Rebuild dim_customer...');
+    console.log("🧱 Rebuild dim_customer...");
+    writeEtlLog("Rebuild dim_customer");
     await DimCustomer.deleteMany({});
 
-    const users = await StagingUser.find({}).lean();
-    if (!users.length) {
-        console.warn('⚠️ staging_users trống');
+    const stagingUsers = await StagingUser.find({}).lean();
+    if (!stagingUsers.length) {
+        console.warn("⚠️ staging_users trống");
+        writeEtlLog("WARN: staging_users empty");
         return new Map();
     }
 
-    // DEDUPE THEO customer_id
-    const byCustomer = new Map();
-    for (const u of users) {
-        if (!u.customer_id) continue;
-        // nếu có nhiều bản ghi cùng customer_id, giữ bản đầu tiên
-        if (!byCustomer.has(u.customer_id)) {
-            byCustomer.set(u.customer_id, u);
-        }
-    }
-
-    const docs = [...byCustomer.values()].map(u => ({
-        customer_id: u.customer_id,
-        name: u.name,
-        email: u.email,
-        phone: u.phone,
-        tier: u.tier,
-        status: u.status,
-        created_at: u.created_at,
-    }));
+    const strategy = new CustomerTransformStrategy();
+    const docs = strategy.transform(stagingUsers);
 
     if (!docs.length) {
-        console.warn('⚠️ Không có dữ liệu hợp lệ để build dim_customer');
+        console.warn("⚠️ Không có dữ liệu hợp lệ để build dim_customer");
+        writeEtlLog("WARN: no valid docs for dim_customer");
         return new Map();
     }
 
     const inserted = await DimCustomer.insertMany(docs, { ordered: true });
     console.log(`✅ dim_customer inserted: ${inserted.length}`);
+    writeEtlLog(`dim_customer inserted: ${inserted.length}`);
 
-    // map customer_id -> _id
     const map = new Map();
     for (const d of inserted) {
         map.set(d.customer_id, d._id);
@@ -56,43 +58,28 @@ async function buildDimCustomer() {
 
 async function buildDimMenuItem() {
     console.log("🧱 Rebuild dim_menu_item...");
+    writeEtlLog("Rebuild dim_menu_item");
     await DimMenuItem.deleteMany({});
 
-    const products = await StagingProduct.find({}).lean();
-    if (!products.length) {
+    const stagingProducts = await StagingProduct.find({}).lean();
+    if (!stagingProducts.length) {
         console.warn("⚠️ staging_products trống");
+        writeEtlLog("WARN: staging_products empty");
         return new Map();
     }
 
-    // DEDUPE THEO product_id
-    const byProduct = new Map();
-    for (const p of products) {
-        if (!p.product_id) continue;
-        // nếu có nhiều record cùng product_id, giữ bản đầu tiên
-        if (!byProduct.has(p.product_id)) {
-            byProduct.set(p.product_id, p);
-        }
-    }
-
-    const docs = [...byProduct.values()].map((p) => ({
-        product_id: p.product_id,
-        name: p.name,
-        price: p.price,
-        discount: p.discount,
-        publish: p.publish,
-        category_ids: p.category_ids,
-        sub_category_id: p.sub_category_id,
-        slug: p.slug,
-        created_at: p.created_at,
-    }));
+    const strategy = new MenuItemTransformStrategy();
+    const docs = strategy.transform(stagingProducts);
 
     if (!docs.length) {
         console.warn("⚠️ Không có dữ liệu hợp lệ để build dim_menu_item");
+        writeEtlLog("WARN: no valid docs for dim_menu_item");
         return new Map();
     }
 
     const inserted = await DimMenuItem.insertMany(docs, { ordered: true });
     console.log(`✅ dim_menu_item inserted: ${inserted.length}`);
+    writeEtlLog(`dim_menu_item inserted: ${inserted.length}`);
 
     const map = new Map();
     for (const d of inserted) {
@@ -101,68 +88,47 @@ async function buildDimMenuItem() {
     return map;
 }
 
-async function buildFactOrderItems(customerMap, productMap) {
-    console.log('🧱 Rebuild fact_order_item...');
+async function buildFactOrderItems(customerMap, menuItemMap) {
+    console.log("🧱 Rebuild fact_order_item...");
+    writeEtlLog("Rebuild fact_order_item");
     await FactOrderItem.deleteMany({});
 
-    const items = await StagingOrderItem.find({}).lean();
-    if (!items.length) {
-        console.warn('⚠️ staging_order_items trống');
+    const stagingOrders = await StagingOrderItem.find({}).lean();
+    if (!stagingOrders.length) {
+        console.warn("⚠️ staging_order_items trống");
+        writeEtlLog("WARN: staging_order_items empty");
         return;
     }
 
-    const docs = items.map(it => {
-        const customer_key = it.customer_id
-            ? customerMap.get(it.customer_id) || null
-            : null;
+    const strategy = new OrderItemTransformStrategy();
+    const docs = strategy.transform(stagingOrders, customerMap, menuItemMap);
 
-        const menu_item_key = it.product_id
-            ? productMap.get(it.product_id) || null
-            : null;
+    if (!docs.length) {
+        console.warn("⚠️ Không có dữ liệu hợp lệ để build fact_order_item");
+        writeEtlLog("WARN: no valid docs for fact_order_item");
+        return;
+    }
 
-        return {
-            order_id: it.order_id,
-
-            customer_key,
-            menu_item_key,
-            customer_id: it.customer_id || null,
-            product_id: it.product_id || null,
-
-            product_name: it.product_name,
-            quantity: it.quantity,
-            unit_price: it.unit_price,
-            subtotal: it.subtotal,
-            discount: it.discount,
-            total: it.total,
-
-            payment_method: it.payment_method,
-            payment_status: it.payment_status,
-            order_status: it.order_status,
-
-            ordered_at: it.ordered_at,
-            completed_at: it.completed_at,
-
-            voucher_id: it.voucher_id,
-            table_number: it.table_number,
-        };
-    });
-
-    const inserted = await FactOrderItem.insertMany(docs);
+    const inserted = await FactOrderItem.insertMany(docs, { ordered: true });
     console.log(`✅ fact_order_item inserted: ${inserted.length}`);
+    writeEtlLog(`fact_order_item inserted: ${inserted.length}`);
 }
 
 async function main() {
     try {
         await connectDB();
+        writeEtlLog("=== ETL Transform & Load START ===");
 
         const customerMap = await buildDimCustomer();
-        const productMap = await buildDimMenuItem();
-        await buildFactOrderItems(customerMap, productMap);
+        const menuItemMap = await buildDimMenuItem();
+        await buildFactOrderItems(customerMap, menuItemMap);
 
         console.log('🎉 Transform & Load hoàn tất!');
+        writeEtlLog("=== ETL Transform & Load DONE ===");
         process.exit(0);
     } catch (err) {
         console.error('🚨 Lỗi Transform & Load:', err);
+        writeEtlLog(`ERROR: ${err.message}`);
         process.exit(1);
     }
 }

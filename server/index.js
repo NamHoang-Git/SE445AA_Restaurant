@@ -14,6 +14,7 @@ import orderRouter from './route/order.route.js';
 import voucherRouter from './route/voucher.route.js';
 import menuCategoryRouter from "./route/menuCategory.route.js";
 import subMenuCategoryRouter from './route/subMenuCategory.route.js';
+import etlRouter from "./route/etl.route.js";
 
 const app = express();
 
@@ -72,6 +73,8 @@ app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/stripe', orderRouter);
 app.use('/api/voucher', voucherRouter);
+
+app.use('/api/etl', etlRouter);
 
 connectDB().then(() => {
     app.listen(PORT, () => {

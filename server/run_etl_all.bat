@@ -4,6 +4,9 @@ echo   CHAY TOAN BO ETL PIPELINE (NHA HANG + KHO)
 echo ============================================
 echo.
 
+echo [0/5] Reset STAGING...
+node scripts/reset_staging.js
+
 REM 1. Day du lieu tu CSV (nha hang) len RabbitMQ
 echo [1/5] Producer CSV - Nha hang (user/product/order)...
 node producer_user.js
