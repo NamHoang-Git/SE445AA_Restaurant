@@ -236,6 +236,84 @@ const SummaryApi = {
         url: '/api/etl/analytics',
         method: 'get',
     },
+
+    // Employee Management
+    get_all_employees: {
+        url: '/api/employee/all',
+        method: 'get'
+    },
+    get_employee_by_id: {
+        url: '/api/employee',
+        method: 'get'
+    },
+    create_employee: {
+        url: '/api/employee/create',
+        method: 'post'
+    },
+    update_employee: {
+        url: '/api/employee/update',
+        method: 'put'
+    },
+    delete_employee: {
+        url: '/api/employee/delete',
+        method: 'delete'
+    },
+    get_employees_by_role: {
+        url: '/api/employee/role',
+        method: 'get'
+    },
+
+    // Shift Management
+    create_shift: {
+        url: '/api/shift/create',
+        method: 'post'
+    },
+    get_shifts_by_date: {
+        url: '/api/shift/date',
+        method: 'get'
+    },
+    get_employee_shifts: {
+        url: '/api/shift/employee',
+        method: 'get'
+    },
+    get_my_shifts: {
+        url: '/api/shift/my-shifts',
+        method: 'get'
+    },
+    update_shift: {
+        url: '/api/shift/update',
+        method: 'put'
+    },
+    delete_shift: {
+        url: '/api/shift/delete',
+        method: 'delete'
+    },
+    check_in: {
+        url: '/api/shift/check-in',
+        method: 'post'
+    },
+    check_out: {
+        url: '/api/shift/check-out',
+        method: 'post'
+    },
+
+    // Performance
+    get_employee_performance: {
+        url: '/api/performance/employee',
+        method: 'get'
+    },
+    get_all_performance: {
+        url: '/api/performance/all',
+        method: 'get'
+    },
+    get_my_performance: {
+        url: '/api/performance/my-performance',
+        method: 'get'
+    },
+    get_performance_summary: {
+        url: '/api/performance/summary',
+        method: 'get'
+    },
 }
 
 export default SummaryApi

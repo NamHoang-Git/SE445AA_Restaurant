@@ -76,7 +76,7 @@ export function LoginForm({
                     email: '',
                     password: '',
                 });
-                navigate('/');
+                navigate('/admin/reports');
             }
         } catch (error) {
             AxiosToastError(error);

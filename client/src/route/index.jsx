@@ -1,7 +1,6 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
 import Home from '@/pages/Home';
-import SearchPage from '../pages/SearchPage';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import RegistrationSuccess from '@/pages/RegistrationSuccess';
@@ -9,21 +8,14 @@ import VerifyEmail from '@/pages/VerifyEmail';
 import ForgotPassword from '@/pages/ForgotPassword';
 import OtpVerification from '@/pages/OtpVerification';
 import ResetPassword from '@/pages/ResetPassword';
-import AdminPermission from '../layouts/AdminPermission';
-import ProductListPage from '../pages/ProductListPage';
-import ProductDisplayPage from '../pages/ProductDisplayPage';
-import Success from './../pages/Success';
-import Cancel from './../pages/Cancel';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
-import MenuCategoryPage from '@/pages/MenuCategoryPage';
-import SubMenuCategoryPage from '@/pages/SubMenuCategoryPage';
-import LogsPage from '@/pages/LogsPage';
 import EtlMonitorPage from '@/pages/EtlMonitorPage';
-import ETLDashboard from '@/pages/ETLDashboard';
-import LogsViewer from '@/pages/LogsViewer';
+import EmployeeManagementPage from '@/pages/EmployeeManagementPage';
+import CheckInOutPage from '@/pages/CheckInOutPage';
+import MyPerformancePage from '@/pages/MyPerformancePage';
 
 const router = createBrowserRouter([
     {
@@ -32,11 +24,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <Home />,
-            },
-            {
-                path: 'search',
-                element: <SearchPage />,
+                element: <Navigate to="/login" replace />,
             },
             {
                 path: 'login',
@@ -59,32 +47,24 @@ const router = createBrowserRouter([
                         element: <Profile />,
                     },
                     {
-                        path: 'logs',
-                        element: <LogsPage />,
-                    },
-                    {
                         path: 'users',
-                        element: <Profile />,
-                    },
-                    {
-                        path: 'products',
-                        element: <Profile />,
-                    },
-                    {
-                        path: 'categories',
-                        element: <MenuCategoryPage />,
-                    },
-                    {
-                        path: 'sub-categories',
-                        element: <SubMenuCategoryPage />,
-                    },
-                    {
-                        path: 'vouchers',
                         element: <Profile />,
                     },
                     {
                         path: 'reports',
                         element: <EtlMonitorPage />,
+                    },
+                    {
+                        path: 'employees',
+                        element: <EmployeeManagementPage />,
+                    },
+                    {
+                        path: 'check-in-out',
+                        element: <CheckInOutPage />,
+                    },
+                    {
+                        path: 'my-performance',
+                        element: <MyPerformancePage />,
                     },
                 ],
             },
@@ -145,42 +125,6 @@ const router = createBrowserRouter([
                         element: <Profile />,
                     },
                 ],
-            },
-            {
-                path: ':category',
-                element: <ProductListPage />,
-            },
-            {
-                path: 'product/:product',
-                element: <ProductDisplayPage />,
-            },
-            // {
-            //     path: 'cart',
-            //     element: <CartPage />,
-            // },
-            // {
-            //     path: 'checkout',
-            //     element: (
-            //         <ProtectedRoute>
-            //             <CheckoutPage />
-            //         </ProtectedRoute>
-            //     ),
-            // },
-            {
-                path: 'success',
-                element: (
-                    <ProtectedRoute>
-                        <Success />
-                    </ProtectedRoute>
-                ),
-            },
-            {
-                path: 'cancel',
-                element: (
-                    <ProtectedRoute>
-                        <Cancel />
-                    </ProtectedRoute>
-                ),
             },
         ],
     },

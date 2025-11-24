@@ -1,6 +1,6 @@
 import { Button } from '../components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../components/ui/sheet';
-import { Menu, Briefcase, Tag, HelpCircle, FileText, Info } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import logo from '../assets/logo.png';
 import React, {
     useState,
@@ -11,31 +11,12 @@ import React, {
     KeyboardEvent,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCartPlus } from 'react-icons/fa6';
-import {
-    FaBoxOpen,
-    FaCaretDown,
-    FaCaretUp,
-    FaHome,
-    FaSearch,
-} from 'react-icons/fa';
+import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
-import { DisplayPriceInVND } from '../utils/DisplayPriceInVND';
-import { useGlobalContext } from '../provider/GlobalProvider';
-import DisplayCartItem from './DisplayCartItem';
 import defaultAvatar from '../assets/defaultAvatar.png';
-import Search from './Search';
-import { valideURLConvert } from '@/utils/valideURLConvert';
 import { RootState } from '@/store/store';
 import UserMenu from './UserMenu';
-
-// Define types for the link items
-interface NavLink {
-    href: string;
-    icon: React.ReactNode;
-    label: string;
-}
 
 // Define type for the user object
 interface User {
@@ -53,36 +34,10 @@ interface CartItem {
 
 export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-    const categoryData =
-        useSelector((state: RootState) => state.product?.allCategory) || [];
-    const firstCategory = categoryData.length > 0 ? categoryData[0] : null;
-
-    const links: NavLink[] = [
-        {
-            href: '/',
-            icon: <FaHome size={14} className="" />,
-            label: 'Trang chủ',
-        },
-        {
-            href: firstCategory
-                ? `/${valideURLConvert(firstCategory.name)}-${
-                      firstCategory._id
-                  }`
-                : '/products',
-            icon: <FaBoxOpen size={14} className="" />,
-            label: 'Sản phẩm',
-        },
-    ];
-
     const navigate = useNavigate();
     const user = useSelector((state: RootState) => state?.user) as User | null;
     const [openUserMenu, setOpenUserMenu] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const cartItem = useSelector(
-        (state: RootState) => state.cartItem?.cart
-    ) as CartItem[];
-    const { totalPrice, totalQty } = useGlobalContext();
-    const [openCartSection, setOpenCartSection] = useState<boolean>(false);
 
     // Handle clicks outside the menu
     useEffect(() => {
@@ -172,24 +127,6 @@ export function Header() {
                                 EatEase
                             </span>
                         </Link>
-                        {/* Desktop Nav */}
-                        <div className="hidden md:flex items-center gap-6">
-                            <nav className="flex items-center gap-6 text-sm">
-                                {links.map((l) => (
-                                    <Link
-                                        key={l.href}
-                                        to={l.href}
-                                        onClick={scrollToTop}
-                                        className="hover:text-amber-200 transition-colors flex items-center gap-[6px]"
-                                    >
-                                        {l.label}
-                                    </Link>
-                                ))}
-                            </nav>
-                            <Link to="/search">
-                                <FaSearch size={14} className="mb-[3px]" />
-                            </Link>
-                        </div>
                         {/* User */}
                         <div className="hidden md:flex items-center justify-end gap-5">
                             {user?._id ? (
@@ -255,7 +192,9 @@ export function Header() {
                                             >
                                                 <UserMenu
                                                     close={closeMenu}
-                                                    menuTriggerRef={menuRef as React.RefObject<HTMLDivElement>}
+                                                    menuTriggerRef={
+                                                        menuRef as React.RefObject<HTMLDivElement>
+                                                    }
                                                 />
                                             </motion.div>
                                         )}
@@ -269,33 +208,6 @@ export function Header() {
                                     Đăng nhập
                                 </button>
                             )}
-                            <button
-                                onClick={
-                                    user?._id
-                                        ? () => setOpenCartSection(true)
-                                        : redirectToLoginPage
-                                }
-                                className={`${
-                                    cartItem[0] ? ' py-1.5' : ' py-3'
-                                } flex items-center gap-2 bg-lime-400 text-gray-700 font-medium rounded-lg px-3.5
-                                hover:bg-lime-300 hover:shadow-md hover:scale-[1.02] transition-all`}
-                            >
-                                <div className="animate-bounce">
-                                    <FaCartPlus size={20} />
-                                </div>
-                                <div className="font-bold text-sm">
-                                    {cartItem[0] ? (
-                                        <div className="ml-1 flex flex-col items-center justify-center">
-                                            <p>{totalQty} sản phẩm</p>
-                                            <p>
-                                                {DisplayPriceInVND(totalPrice)}
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <p>Giỏ hàng</p>
-                                    )}
-                                </div>
-                            </button>
                         </div>
                         {/* Mobile Nav */}
                         <div className="md:hidden">
@@ -337,30 +249,6 @@ export function Header() {
                                             </span>
                                         </Link>
                                     </div>
-                                    <div className="px-2">
-                                        <Search />
-                                    </div>
-                                    <nav className="flex flex-col gap-1 mt-2 text-gray-200">
-                                        {links.map((l) => (
-                                            <Link
-                                                key={l.href}
-                                                to={l.href}
-                                                onClick={() => {
-                                                    closeMenu();
-                                                    closeMobileMenu();
-                                                    scrollToTop();
-                                                }}
-                                                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-900 hover:text-purple-400 transition-colors"
-                                            >
-                                                <span className="inline-flex items-center justify-center w-5 h-5">
-                                                    {l.icon}
-                                                </span>
-                                                <span className="text-sm">
-                                                    {l.label}
-                                                </span>
-                                            </Link>
-                                        ))}
-                                    </nav>
                                     <div className="mt-auto border-t border-gray-800 p-4">
                                         <div className="flex items-center justify-center w-full gap-5">
                                             {user?._id ? (
@@ -476,12 +364,6 @@ export function Header() {
                     </div>
                 </div>
             </header>
-            <div className="hidden md:block z-10 relative">
-                <Search />
-            </div>
-            {openCartSection && (
-                <DisplayCartItem close={() => setOpenCartSection(false)} />
-            )}
         </>
     );
 }

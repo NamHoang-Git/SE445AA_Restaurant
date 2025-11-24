@@ -1,14 +1,12 @@
 // @ts-nocheck
 import { useSelector } from 'react-redux';
 import { Button } from '../ui/button';
-import LazyVideo from './lazy-video';
 import { useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
 import { valideURLConvert } from '../../utils/valideURLConvert';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { useDispatch } from 'react-redux';
-import { setAllCategory } from '@/store/productSlice';
 import Axios from '@/utils/Axios';
 import SummaryApi from '@/common/SummaryApi';
 import toast from 'react-hot-toast';

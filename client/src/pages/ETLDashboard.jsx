@@ -145,7 +145,7 @@ function ETLDashboard() {
                 </div>
             </div>
 
-            <div className="text-sm text-gray-600 flex items-center gap-2">
+            <div className="text-sm text-highlight flex items-center gap-2">
                 <span>
                     Lần chạy ETL gần nhất:{' '}
                     {lastRunAt

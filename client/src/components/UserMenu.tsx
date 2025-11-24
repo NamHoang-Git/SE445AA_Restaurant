@@ -5,7 +5,6 @@ import Divider from './Divider';
 import Axios, { setIsLoggingOut } from './../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { logout, updateUserPoints } from '../store/userSlice';
-import { clearCart } from '../store/cartProduct';
 import { toast } from 'react-hot-toast';
 import AxiosToastError from './../utils/AxiosToastError';
 import { BiRefresh } from 'react-icons/bi';
@@ -17,10 +16,12 @@ import {
     Layers,
     TicketPercent,
     BarChart2,
+    Users2,
+    Clock,
+    TrendingUp,
 } from 'lucide-react';
 import defaultAvatar from '@/assets/defaultAvatar.png';
 import { RiExternalLinkFill } from 'react-icons/ri';
-import GradientText from './animation/GradientText';
 
 interface UserMenuProps {
     close: () => void;
@@ -42,39 +43,24 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
 
     const links: NavLink[] = [
         {
-            href: '/admin/dashboard',
-            icon: <Home size={14} className="mb-0.5" />,
-            label: 'Trang quản trị',
-        },
-        {
-            href: '/admin/users',
-            icon: <Users size={14} className="mb-0.5" />,
-            label: 'Quản lý người dùng',
-        },
-        {
-            href: '/admin/products',
-            icon: <Package size={14} className="mb-0.5" />,
-            label: 'Quản lý sản phẩm',
-        },
-        {
-            href: '/admin/categories',
-            icon: <Layers size={14} className="mb-0.5" />,
-            label: 'Quản lý danh mục',
-        },
-        {
-            href: '/admin/sub-categories',
-            icon: <Layers size={14} className="mb-0.5" />,
-            label: 'Quản lý danh mục phụ',
-        },
-        {
-            href: '/admin/vouchers',
-            icon: <TicketPercent size={14} className="mb-0.5" />,
-            label: 'Mã giảm giá',
-        },
-        {
             href: '/admin/reports',
             icon: <BarChart2 size={14} className="mb-0.5" />,
-            label: 'Báo cáo thống kê',
+            label: 'Báo cáo',
+        },
+        {
+            href: '/admin/employees',
+            icon: <Users2 size={14} className="mb-0.5" />,
+            label: 'Quản lý Nhân viên',
+        },
+        {
+            href: '/admin/check-in-out',
+            icon: <Clock size={14} className="mb-0.5" />,
+            label: 'Check-in/out',
+        },
+        {
+            href: '/admin/my-performance',
+            icon: <TrendingUp size={14} className="mb-0.5" />,
+            label: 'Hiệu suất của tôi',
         },
     ];
 
@@ -143,7 +129,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
                 }
                 // Clear Redux state immediately
                 dispatch(logout());
-                dispatch(clearCart());
                 setIsLoggingOut(true);
 
                 // Clear localStorage
@@ -163,7 +148,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
 
     return (
         <div className="bg-background text-muted-foreground rounded-lg shadow-lg overflow-hidden w-full">
-            <div className="p-4 py-2">
+            <div className="p-4 py-4">
                 <div className="flex items-center gap-3">
                     <Link
                         to={'/dashboard/profile'}
@@ -196,44 +181,10 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
                         <p className="text-xs truncate">{user?.email}</p>
                     </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between">
-                    <GradientText
-                        colors={[
-                            '#FFD700',
-                            '#FFB300',
-                            '#FF8C00',
-                            '#FF4500',
-                            '#B22222',
-                        ]}
-                        animationSpeed={3}
-                        showBorder={false}
-                        className="custom-class"
-                    >
-                        <span className="text-xs">Điểm tích lũy:</span>
-                        {isLoadingPoints ? (
-                            <BiRefresh className="animate-spin" />
-                        ) : (
-                            <span className="text-xs font-bold px-2">
-                                {user?.rewardsPoint?.toLocaleString() || 0}
-                            </span>
-                        )}
-                    </GradientText>
-                    <button
-                        onClick={fetchUserPoints}
-                        disabled={isLoadingPoints}
-                        className="text-orange-600 hover:text-orange-400 disabled:opacity-50"
-                    >
-                        <BiRefresh
-                            className={`inline-block ${
-                                isLoadingPoints ? 'animate-spin' : ''
-                            }`}
-                        />
-                    </button>
-                </div>
             </div>
             <Divider />
 
-            <div className="grid gap-1">
+            <div className="grid gap-1 py-2">
                 {links.map((l) => (
                     <Link
                         key={l.href}

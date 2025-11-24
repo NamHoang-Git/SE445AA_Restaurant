@@ -6,7 +6,7 @@ const PublicRoute = ({ children }) => {
 
     // Nếu đã login thì chuyển hướng về home/dashboard
     if (user._id) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/admin/dashboard" replace />;
     }
 
     return children;

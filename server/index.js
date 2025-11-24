@@ -8,13 +8,10 @@ import helmet from "helmet";
 import connectDB from "./config/connectDB.js";
 import userRouter from "./route/user.route.js";
 import uploadRouter from "./route/upload.route.js";
-import productRouter from "./route/product.route.js";
-import cartRouter from "./route/cart.route.js";
-import orderRouter from './route/order.route.js';
-import voucherRouter from './route/voucher.route.js';
-import menuCategoryRouter from "./route/menuCategory.route.js";
-import subMenuCategoryRouter from './route/subMenuCategory.route.js';
 import etlRouter from "./route/etl.route.js";
+import employeeRouter from "./route/employee.route.js";
+import shiftRouter from "./route/shift.route.js";
+import performanceRouter from "./route/performance.route.js";
 
 const app = express();
 
@@ -25,29 +22,7 @@ app.use(
     }),
 );
 
-// Middleware để lưu raw body cho webhook
-app.use((req, res, next) => {
-    if (req.originalUrl === '/api/order/webhook' || req.originalUrl === '/api/stripe/webhook') {
-        let data = '';
-        req.setEncoding('utf8');
-        req.on('data', chunk => {
-            data += chunk;
-        });
-        req.on('end', () => {
-            req.rawBody = data;
-            try {
-                req.body = JSON.parse(data);
-            } catch (error) {
-                console.error('Error parsing webhook JSON:', error);
-                req.body = {};
-            }
-            next();
-        });
-    } else {
-        express.json()(req, res, next);
-    }
-});
-
+app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(
@@ -65,16 +40,13 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/user', userRouter);
-app.use('/api/menu-category', menuCategoryRouter);
-app.use('/api/sub-menu-category', subMenuCategoryRouter);
 app.use('/api/file', uploadRouter);
-app.use('/api/product', productRouter);
-app.use('/api/cart', cartRouter);
-app.use('/api/order', orderRouter);
-app.use('/api/stripe', orderRouter);
-app.use('/api/voucher', voucherRouter);
-
 app.use('/api/etl', etlRouter);
+
+// Employee Management routes
+app.use('/api/employee', employeeRouter);
+app.use('/api/shift', shiftRouter);
+app.use('/api/performance', performanceRouter);
 
 connectDB().then(() => {
     app.listen(PORT, () => {

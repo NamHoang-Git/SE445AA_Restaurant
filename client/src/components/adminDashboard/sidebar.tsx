@@ -25,18 +25,12 @@ import { Link, useLocation } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 
 const navigation = [
-    { name: 'Trang quản trị', href: '/admin/dashboard', icon: Home },
-    { name: 'Quản lý người dùng', href: '/admin/users', icon: Users2 },
-    { name: 'Quản lý sản phẩm', href: '/admin/products', icon: Package },
-    { name: 'Quản lý danh mục', href: '/admin/categories', icon: Layers },
-    { name: 'Quản lý danh mục phụ', href: '/admin/sub-categories', icon: Layers },
-    { name: 'Mã giảm giá', href: '/admin/vouchers', icon: TicketPercent },
-    { name: 'Báo cáo thống kê', href: '/admin/reports', icon: BarChart2 },
+    { name: 'Báo cáo', href: '/admin/reports', icon: BarChart2 },
 ];
 
 const bottomNavigation = [
     { name: 'Tài khoản', href: '/dashboard/profile', icon: Settings },
-    { name: 'Hỗ trợ', href: '/help', icon: HelpCircle },
+    { name: 'Hỗ trợ', href: '/dashboard/#', icon: HelpCircle },
 ];
 
 export function Sidebar() {

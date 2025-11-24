@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Axios from '@/utils/Axios';
 import SummaryApi from '@/common/SummaryApi';
 import AxiosToastError from '@/utils/AxiosToastError';
+import { Button } from '@/components/ui/button';
 
 const SOURCES = [
     { key: 'all', label: 'Tất cả' },
@@ -97,18 +98,18 @@ function LogsViewer() {
             {/* Filter theo nguồn log */}
             <div className="flex gap-2 text-sm flex-wrap">
                 {SOURCES.map((s) => (
-                    <button
+                    <Button
                         key={s.key}
                         type="button"
                         onClick={() => setSelectedSource(s.key)}
-                        className={`px-3 py-1 rounded border ${
+                        className={`px-3 py-1 rounded border text-foreground hover:text-background ${
                             selectedSource === s.key
-                                ? 'bg-gray-200'
-                                : 'bg-white'
+                                ? 'bg-foreground text-background'
+                                : 'bg-background'
                         }`}
                     >
                         {s.label}
-                    </button>
+                    </Button>
                 ))}
             </div>
 

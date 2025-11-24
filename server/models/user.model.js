@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import OrderModel from "./order.model.js";
 
 const pointsHistorySchema = new mongoose.Schema({
     orderId: {
@@ -127,12 +126,26 @@ const userSchema = new mongoose.Schema({
     // Vai trò và chức vụ
     role: {
         type: String,
-        enum: ["ADMIN", "MANAGER", "STAFF", "USER"],
+        enum: ["ADMIN", "MANAGER", "WAITER", "CHEF", "CASHIER", "USER"],
         default: "USER",
     },
     position: {
         type: String,
-        enum: [null, "WAITER", "CHEF", "CASHIER"],
+        default: null,
+    },
+
+    // Employee-specific fields
+    hireDate: {
+        type: Date,
+        default: null,
+    },
+    employeeStatus: {
+        type: String,
+        enum: ["active", "inactive", "on_leave"],
+        default: "active",
+    },
+    salary: {
+        type: Number,
         default: null,
     },
 
@@ -169,33 +182,6 @@ const userSchema = new mongoose.Schema({
     pointsHistory: [pointsHistorySchema],
 
 }, { timestamps: true });
-
-// Tự động cập nhật điểm thưởng khi có đơn hàng
-OrderModel.schema.post('save', async function (doc) {
-    try {
-        if (doc.earnedPoints && doc.earnedPoints > 0) {
-            await mongoose.model('user').findByIdAndUpdate(
-                doc.userId,
-                {
-                    $inc: { rewardsPoint: doc.earnedPoints },
-                    $push: {
-                        orderHistory: doc._id,
-                        pointsHistory: {
-                            orderId: doc.orderId,
-                            points: doc.earnedPoints,
-                            type: 'earned',
-                            description: `Tích điểm từ đơn hàng ${doc.orderId}`,
-                            createdAt: new Date()
-                        }
-                    }
-                },
-                { new: true, useFindAndModify: false }
-            );
-        }
-    } catch (error) {
-        console.error('Error updating user points from order:', error);
-    }
-});
 
 const UserModel = mongoose.model("user", userSchema);
 
