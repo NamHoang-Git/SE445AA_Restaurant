@@ -39,6 +39,18 @@ const QUEUES = [
     { name: "staging_wh_export", model: StagingWhExport, validate: validateWhExport },
 ];
 
+// Helper function to get unique key field for each queue
+function getUniqueKey(queueName) {
+    const keyMap = {
+        'staging_user': 'customer_id',
+        'staging_product': 'product_id',
+        'staging_order': 'order_id',
+        'staging_wh_import': 'import_id',
+        'staging_wh_export': 'export_id',
+    };
+    return keyMap[queueName] || '_id';
+}
+
 async function consumeQueue(channel, { name, model, validate }) {
     await channel.assertQueue(name, { durable: true });
     await channel.assertQueue(`error_${name}`, { durable: true });
@@ -65,10 +77,13 @@ async function consumeQueue(channel, { name, model, validate }) {
                     console.warn(`⚠️  ${name} ${errMsg}`);
                     writeConsumerLog(name, errMsg);
 
+                    // Enhanced error staging
                     await StagingError.create({
-                        queue: name,
-                        original: payload,
-                        errors,
+                        source: name,
+                        raw_data: payload,
+                        cleaned_data: data,  // Include cleaned data even if validation failed
+                        validation_errors: errors,
+                        error_type: 'VALIDATION_FAILED',
                     });
 
                     channel.sendToQueue(
@@ -81,9 +96,31 @@ async function consumeQueue(channel, { name, model, validate }) {
                     return;
                 }
 
-                await model.create(data);
-                console.log(`✅ ${name}: saved`);
-                writeConsumerLog(name, `SAVED: ${JSON.stringify(data)}`);
+                // Implement deduplication using upsert
+                const uniqueKey = getUniqueKey(name);
+                const uniqueValue = data[uniqueKey];
+
+                if (!uniqueValue) {
+                    console.warn(`⚠️  ${name}: Missing unique key ${uniqueKey}`);
+                    writeConsumerLog(name, `WARN: Missing unique key ${uniqueKey}`);
+                    channel.ack(msg);
+                    return;
+                }
+
+                // Upsert to avoid duplicates
+                const result = await model.updateOne(
+                    { [uniqueKey]: uniqueValue },
+                    { $set: data },
+                    { upsert: true }
+                );
+
+                if (result.upsertedCount > 0) {
+                    console.log(`✅ ${name}: inserted (new)`);
+                    writeConsumerLog(name, `INSERTED: ${JSON.stringify(data)}`);
+                } else {
+                    console.log(`🔄 ${name}: updated (deduplicated)`);
+                    writeConsumerLog(name, `UPDATED (deduplicated): ${JSON.stringify(data)}`);
+                }
 
                 channel.ack(msg);
             } catch (err) {

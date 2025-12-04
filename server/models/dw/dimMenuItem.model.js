@@ -10,6 +10,9 @@ const DimMenuItemSchema = new mongoose.Schema({
     sub_category_id: String,
     slug: String,
     created_at: Date,
+    // NEW: Merged data from warehouse
+    avg_import_cost: Number,
+    warehouse_location: String,
 }, {
     timestamps: true,
     collection: 'dw_dim_menu_items',

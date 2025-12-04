@@ -2,3 +2,7 @@ customer_id,name,email,phone,tier,status,created_at
 U001,Nguyen Van A,a@example.com,0912345678,GOLD,Active,2025-10-01T10:00:00Z
 U002,Tran Thi B,b@example.com,0987654321,SILVER,Active,2025-10-05T08:30:00Z
 U003,Le Van C,c@example.com,0909090909,BRONZE,Inactive,2025-10-10T12:45:00Z
+U004,  NGUYEN van b  ,invalid-email,090000000000,GOLD,Active,2025-10-12T09:00:00Z
+U005,le t nga,nga@example.com,+84912111222,SILVER,Active,2025-10-15T14:30:00Z
+U006,Ng V A,ngva@example.com,+84912345678,BRONZE,Active,2025-10-20T11:00:00Z
+U001,Nguyen Van A DUPLICATE,a@example.com,0912345678,PLATINUM,Active,2025-10-25T16:00:00Z

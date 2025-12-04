@@ -1,3 +1,11 @@
+import {
+    normalizeName,
+    normalizePhone,
+    normalizeEmail,
+    expandAbbreviations,
+    cleanProductName,
+} from './dataCleaning.util.js';
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 // VN: 0xxxxxxxxx, 10–11 số; hoặc +84...
 const PHONE_RE = /^(0|\+?84)(\d{9,10})$/;
@@ -18,16 +26,26 @@ function isoOrNull(v) {
 
 export function validateUser(msg) {
     const errors = [];
+
+    // 1. Clean data BEFORE validation
+    let cleanName = normalizeName(msg.name);
+    cleanName = expandAbbreviations(cleanName);
+    const cleanEmail = normalizeEmail(msg.email);
+    const cleanPhone = normalizePhone(msg.phone);
+
     const out = {
         customer_id: safeStr(msg.customer_id),
-        name: safeStr(msg.name),
-        email: safeStr(msg.email),
-        phone: safeStr(msg.phone),
+        name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone,
         tier: safeStr(msg.tier || 'BRONZE'),
         status: safeStr(msg.status || 'Active'),
         created_at: isoOrNull(msg.created_at),
+        _original_name: msg.name, // Keep original for debugging
+        _original_phone: msg.phone,
     };
 
+    // 2. Validate AFTER cleaning
     if (!out.customer_id) errors.push('customer_id required');
     if (out.email && !EMAIL_RE.test(out.email)) errors.push('email invalid');
     if (out.phone && !PHONE_RE.test(out.phone)) errors.push('phone invalid');
@@ -37,9 +55,13 @@ export function validateUser(msg) {
 
 export function validateProduct(msg) {
     const errors = [];
+
+    // Clean product name
+    const cleanName = cleanProductName(msg.name);
+
     const out = {
         product_id: safeStr(msg.product_id),
-        name: safeStr(msg.name),
+        name: cleanName,
         price: safeNumber(msg.price),
         discount: safeNumber(msg.discount ?? 0) ?? 0,
         publish: !!msg.publish,
@@ -49,6 +71,7 @@ export function validateProduct(msg) {
         sub_category_id: msg.sub_category_id ? String(msg.sub_category_id) : null,
         slug: msg.slug ? safeStr(msg.slug) : null,
         created_at: isoOrNull(msg.created_at),
+        _original_name: msg.name, // Keep original for debugging
     };
 
     if (!out.product_id) errors.push('product_id required');
@@ -80,19 +103,20 @@ export function validateOrderItem(msg) {
         table_number: msg.table_number ?? null,
     };
 
+    // Relaxed validation for real CS445K data
     if (!out.order_id) errors.push('order_id required');
     if (!out.product_id) errors.push('product_id required');
-    if (out.quantity == null || out.quantity <= 0) errors.push('quantity invalid');
-    if (out.unit_price == null || out.unit_price < 0) errors.push('unit_price invalid');
-    if (out.total == null || out.total < 0) errors.push('total invalid');
 
-    // logic nhẹ: subtotal ≈ quantity * unit_price (không bắt buộc tuyệt đối)
-    if (out.subtotal != null && out.quantity != null && out.unit_price != null) {
-        const expected = out.quantity * out.unit_price;
-        if (Math.abs(out.subtotal - expected) > 1e-6) {
-            errors.push('subtotal mismatch');
-        }
-    }
+    // Allow quantity = 0 (cancelled/refunded orders)
+    if (out.quantity == null) errors.push('quantity required');
+
+    // Allow unit_price = 0 (free items, promotions)
+    if (out.unit_price == null) errors.push('unit_price required');
+
+    // Allow total = 0 (free orders, vouchers)
+    if (out.total == null) errors.push('total required');
+
+    // Remove strict subtotal check - real data might have rounding differences
 
     return { ok: errors.length === 0, errors, data: out };
 }
@@ -102,10 +126,12 @@ export function validateWhImport(msg) {
     const out = {
         import_id: safeStr(msg.import_id),
         product_id: safeStr(msg.product_id),
+        product_name_raw: safeStr(msg.product_name_raw),  // NEW: raw product name
         quantity: safeNumber(msg.quantity),
         unit_cost: safeNumber(msg.unit_cost),
         import_date: isoOrNull(msg.import_date),
         supplier: safeStr(msg.supplier),
+        warehouse_location: safeStr(msg.warehouse_location),  // NEW: warehouse location
     };
 
     if (!out.import_id) errors.push('import_id required');

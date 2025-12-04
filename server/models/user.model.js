@@ -126,26 +126,12 @@ const userSchema = new mongoose.Schema({
     // Vai trò và chức vụ
     role: {
         type: String,
-        enum: ["ADMIN", "MANAGER", "WAITER", "CHEF", "CASHIER", "USER"],
+        enum: ["ADMIN", "MANAGER", "STAFF", "USER"],
         default: "USER",
     },
     position: {
         type: String,
-        default: null,
-    },
-
-    // Employee-specific fields
-    hireDate: {
-        type: Date,
-        default: null,
-    },
-    employeeStatus: {
-        type: String,
-        enum: ["active", "inactive", "on_leave"],
-        default: "active",
-    },
-    salary: {
-        type: Number,
+        enum: [null, "WAITER", "CHEF", "CASHIER"],
         default: null,
     },
 

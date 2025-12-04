@@ -18,11 +18,13 @@ async function main() {
     for (const row of imports) {
         const msg = {
             import_id: row.import_code,
-            product_id: row.product_code,
+            product_id: row.item_code,  // Map item_code to product_id for staging
+            product_name_raw: row.product_name_raw,
             quantity: row.quantity,
             unit_cost: row.unit_cost,
             import_date: row.import_date,
             supplier: row.supplier,
+            warehouse_location: row.warehouse_location,
         };
 
         channel.sendToQueue(

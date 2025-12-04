@@ -13,9 +13,6 @@ import PublicRoute from './PublicRoute';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
 import EtlMonitorPage from '@/pages/EtlMonitorPage';
-import EmployeeManagementPage from '@/pages/EmployeeManagementPage';
-import CheckInOutPage from '@/pages/CheckInOutPage';
-import MyPerformancePage from '@/pages/MyPerformancePage';
 
 const router = createBrowserRouter([
     {
@@ -53,18 +50,6 @@ const router = createBrowserRouter([
                     {
                         path: 'reports',
                         element: <EtlMonitorPage />,
-                    },
-                    {
-                        path: 'employees',
-                        element: <EmployeeManagementPage />,
-                    },
-                    {
-                        path: 'check-in-out',
-                        element: <CheckInOutPage />,
-                    },
-                    {
-                        path: 'my-performance',
-                        element: <MyPerformancePage />,
                     },
                 ],
             },

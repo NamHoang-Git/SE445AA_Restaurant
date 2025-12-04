@@ -16,9 +16,6 @@ import {
     Layers,
     TicketPercent,
     BarChart2,
-    Users2,
-    Clock,
-    TrendingUp,
 } from 'lucide-react';
 import defaultAvatar from '@/assets/defaultAvatar.png';
 import { RiExternalLinkFill } from 'react-icons/ri';
@@ -46,21 +43,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
             href: '/admin/reports',
             icon: <BarChart2 size={14} className="mb-0.5" />,
             label: 'Báo cáo',
-        },
-        {
-            href: '/admin/employees',
-            icon: <Users2 size={14} className="mb-0.5" />,
-            label: 'Quản lý Nhân viên',
-        },
-        {
-            href: '/admin/check-in-out',
-            icon: <Clock size={14} className="mb-0.5" />,
-            label: 'Check-in/out',
-        },
-        {
-            href: '/admin/my-performance',
-            icon: <TrendingUp size={14} className="mb-0.5" />,
-            label: 'Hiệu suất của tôi',
         },
     ];
 

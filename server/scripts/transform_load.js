@@ -4,6 +4,7 @@ import connectDB from '../config/connectDB.js';
 import StagingUser from '../models/staging/stagingUser.model.js';
 import StagingProduct from '../models/staging/stagingProduct.model.js';
 import StagingOrderItem from '../models/staging/stagingOrderItem.model.js';
+import StagingWhImport from '../models/staging/stagingWhImport.model.js';  // NEW
 import DimCustomer from '../models/dw/dimCustomer.model.js';
 import DimMenuItem from '../models/dw/dimMenuItem.model.js';
 import FactOrderItem from '../models/dw/factOrderItem.model.js';
@@ -62,6 +63,8 @@ async function buildDimMenuItem() {
     await DimMenuItem.deleteMany({});
 
     const stagingProducts = await StagingProduct.find({}).lean();
+    const stagingWhImports = await StagingWhImport.find({}).lean(); // NEW: Fetch warehouse data
+
     if (!stagingProducts.length) {
         console.warn("⚠️ staging_products trống");
         writeEtlLog("WARN: staging_products empty");
@@ -69,7 +72,7 @@ async function buildDimMenuItem() {
     }
 
     const strategy = new MenuItemTransformStrategy();
-    const docs = strategy.transform(stagingProducts);
+    const docs = strategy.transform(stagingProducts, stagingWhImports); // Pass warehouse data
 
     if (!docs.length) {
         console.warn("⚠️ Không có dữ liệu hợp lệ để build dim_menu_item");
@@ -80,6 +83,13 @@ async function buildDimMenuItem() {
     const inserted = await DimMenuItem.insertMany(docs, { ordered: true });
     console.log(`✅ dim_menu_item inserted: ${inserted.length}`);
     writeEtlLog(`dim_menu_item inserted: ${inserted.length}`);
+
+    // Log merged items
+    const mergedCount = inserted.filter(item => item.avg_import_cost != null).length;
+    if (mergedCount > 0) {
+        console.log(`🔗 Merged warehouse data for ${mergedCount} items`);
+        writeEtlLog(`Merged warehouse data for ${mergedCount} items`);
+    }
 
     const map = new Map();
     for (const d of inserted) {

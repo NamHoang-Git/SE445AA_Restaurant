@@ -1,4 +1,7 @@
-product_id,name,price,discount,publish,category_ids,sub_category_id,slug,created_at
-P001,Cafe Sua,25000,0,true,drink,,cafe-sua,2025-10-01T09:00:00Z
-P002,Banh Mi Thit,35000,5000,true,food,,banh-mi-thit,2025-10-02T11:00:00Z
-P003,Tra Dao,30000,0,false,drink,,tra-dao,2025-10-03T15:30:00Z
+product_id,name,price,discount,publish,category_ids,created_at
+P001,Cafe Sua,25000,0,true,"[""CAT001""]",2025-10-01T10:00:00Z
+P002,Tra Sua,30000,5000,true,"[""CAT001""]",2025-10-02T11:00:00Z
+P003,Banh Mi,-1000,0,true,"[""CAT002""]",2025-10-03T12:00:00Z
+P004,  COM TAM  ,45000,0,true,"[""CAT002""]",2025-10-04T13:00:00Z
+P005,Pho Bo,50000,0,true,"[""CAT002""]",2025-10-05T14:00:00Z
+P006,Bun Cha,40000,2000,true,"[""CAT002""]",2025-10-06T15:00:00Z
