@@ -32,21 +32,21 @@ import {
 } from "../utils/validation.js";
 
 const QUEUES = [
-    { name: "staging_user", model: StagingUser, validate: validateUser },
-    { name: "staging_product", model: StagingProduct, validate: validateProduct },
-    { name: "staging_order", model: StagingOrderItem, validate: validateOrderItem },
-    { name: "staging_wh_import", model: StagingWhImport, validate: validateWhImport },
-    { name: "staging_wh_export", model: StagingWhExport, validate: validateWhExport },
+    { name: "staging_users", model: StagingUser, validate: validateUser },
+    { name: "staging_products", model: StagingProduct, validate: validateProduct },
+    { name: "staging_order_items", model: StagingOrderItem, validate: validateOrderItem },
+    { name: "staging_wh_imports", model: StagingWhImport, validate: validateWhImport },
+    { name: "staging_wh_exports", model: StagingWhExport, validate: validateWhExport },
 ];
 
 // Helper function to get unique key field for each queue
 function getUniqueKey(queueName) {
     const keyMap = {
-        'staging_user': 'customer_id',
-        'staging_product': 'product_id',
-        'staging_order': 'order_id',
-        'staging_wh_import': 'import_id',
-        'staging_wh_export': 'export_id',
+        'staging_users': 'customer_id',
+        'staging_products': 'product_id',
+        'staging_order_items': 'order_id',
+        'staging_wh_imports': 'import_id',
+        'staging_wh_exports': 'export_id',
     };
     return keyMap[queueName] || '_id';
 }

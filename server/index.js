@@ -9,6 +9,8 @@ import connectDB from "./config/connectDB.js";
 import userRouter from "./route/user.route.js";
 import uploadRouter from "./route/upload.route.js";
 import etlRouter from "./route/etl.route.js";
+import analyticsRouter from "./routes/analytics.route.js";
+import warehouseRouter from './routes/warehouse.route.js';
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use('/api/user', userRouter);
 app.use('/api/file', uploadRouter);
 
 app.use('/api/etl', etlRouter);
+app.use('/api/analytics', analyticsRouter);
+app.use('/api/warehouse', warehouseRouter);
 
 connectDB().then(() => {
     app.listen(PORT, () => {

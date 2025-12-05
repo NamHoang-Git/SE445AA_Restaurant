@@ -51,19 +51,32 @@ export class MenuItemTransformStrategy {
             const whByProduct = new Map();
 
             for (const wh of stagingWhImports) {
-                // Map warehouse item_code to restaurant product_id using mapping file
-                const itemCode = wh.product_id; // This is actually item_code (e.g., "CF01")
-                const mappedProductId = productMapping[itemCode]; // Map to "P001"
+                const warehouseProductId = wh.product_id;
 
-                if (!mappedProductId) {
-                    console.warn(`⚠️  No mapping found for warehouse item: ${itemCode}`);
+                // Try two approaches:
+                // 1. Direct match (for CS445K products with MongoDB ObjectId)
+                // 2. Mapping (for old products with custom IDs like P001, RICE01)
+
+                let targetProductId = null;
+
+                // Approach 1: Direct match
+                if (byProduct.has(warehouseProductId)) {
+                    targetProductId = warehouseProductId;
+                }
+                // Approach 2: Use mapping
+                else if (productMapping[warehouseProductId]) {
+                    targetProductId = productMapping[warehouseProductId];
+                }
+
+                if (!targetProductId) {
+                    console.warn(`⚠️  No match found for warehouse product: ${warehouseProductId}`);
                     continue;
                 }
 
-                if (!whByProduct.has(mappedProductId)) {
-                    whByProduct.set(mappedProductId, []);
+                if (!whByProduct.has(targetProductId)) {
+                    whByProduct.set(targetProductId, []);
                 }
-                whByProduct.get(mappedProductId).push(wh);
+                whByProduct.get(targetProductId).push(wh);
             }
 
             // Merge warehouse data into products

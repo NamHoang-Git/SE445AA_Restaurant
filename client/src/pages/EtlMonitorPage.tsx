@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import ETLDashboard from './ETLDashboard';
 import LogsViewer from './LogsViewer';
+import AnalyticsTab from './AnalyticsTab';
 import { useState } from 'react';
 import Axios from '@/utils/Axios';
 import SummaryApi from '@/common/SummaryApi';
@@ -55,13 +56,18 @@ export default function EtlMonitorPage() {
             </div>
 
             <Tabs defaultValue="dashboard" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
                     <TabsTrigger value="logs">Logs</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="dashboard">
                     <ETLDashboard />
+                </TabsContent>
+
+                <TabsContent value="analytics">
+                    <AnalyticsTab />
                 </TabsContent>
 
                 <TabsContent value="logs">

@@ -13,6 +13,7 @@ import PublicRoute from './PublicRoute';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import Profile from '@/pages/Profile';
 import EtlMonitorPage from '@/pages/EtlMonitorPage';
+import WarehouseImports from '@/pages/WarehouseImports';
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
                     {
                         path: 'reports',
                         element: <EtlMonitorPage />,
+                    },
+                    {
+                        path: 'warehouse',
+                        element: <WarehouseImports />,
                     },
                 ],
             },
