@@ -87,16 +87,28 @@ export async function getProfitSummary() {
                 total_orders: 1,
                 avg_profit_per_order: 1,
                 overall_profit_margin: {
-                    $multiply: [
-                        { $divide: ['$total_profit', '$total_revenue'] },
-                        100
-                    ]
+                    $cond: {
+                        if: { $gt: ['$total_revenue', 0] },
+                        then: {
+                            $multiply: [
+                                { $divide: ['$total_profit', '$total_revenue'] },
+                                100
+                            ]
+                        },
+                        else: 0
+                    }
                 },
                 roi: {
-                    $multiply: [
-                        { $divide: ['$total_profit', '$total_cost'] },
-                        100
-                    ]
+                    $cond: {
+                        if: { $gt: ['$total_cost', 0] },
+                        then: {
+                            $multiply: [
+                                { $divide: ['$total_profit', '$total_cost'] },
+                                100
+                            ]
+                        },
+                        else: 0
+                    }
                 },
                 products_analyzed: { $literal: productIds.length }
             }
@@ -174,15 +186,21 @@ export async function getROIAnalysis() {
                     $subtract: ['$total_revenue', '$total_cost']
                 },
                 roi_percent: {
-                    $multiply: [
-                        {
-                            $divide: [
-                                { $subtract: ['$total_revenue', '$total_cost'] },
-                                '$total_cost'
+                    $cond: {
+                        if: { $gt: ['$total_cost', 0] },
+                        then: {
+                            $multiply: [
+                                {
+                                    $divide: [
+                                        { $subtract: ['$total_revenue', '$total_cost'] },
+                                        '$total_cost'
+                                    ]
+                                },
+                                100
                             ]
                         },
-                        100
-                    ]
+                        else: 0
+                    }
                 }
             }
         },
@@ -257,10 +275,16 @@ export async function getTotalProfitByCategory() {
         {
             $addFields: {
                 profit_margin_percent: {
-                    $multiply: [
-                        { $divide: ['$total_profit', '$total_revenue'] },
-                        100
-                    ]
+                    $cond: {
+                        if: { $gt: ['$total_revenue', 0] },
+                        then: {
+                            $multiply: [
+                                { $divide: ['$total_profit', '$total_revenue'] },
+                                100
+                            ]
+                        },
+                        else: 0
+                    }
                 }
             }
         },
@@ -277,7 +301,12 @@ export async function getTotalProfitByCategory() {
  */
 export async function getProfitMarginByProduct() {
     const results = await DimMenuItem.aggregate([
-        { $match: { avg_import_cost: { $ne: null, $gt: 0 } } },
+        {
+            $match: {
+                avg_import_cost: { $ne: null, $gt: 0 },
+                price: { $gt: 0 }  // ← Add this to prevent divide by zero
+            }
+        },
 
         {
             $project: {
@@ -316,7 +345,12 @@ export async function getProfitMarginByProduct() {
  */
 export async function getHighestMarginProducts(limit = 10) {
     const results = await DimMenuItem.aggregate([
-        { $match: { avg_import_cost: { $ne: null, $gt: 0 } } },
+        {
+            $match: {
+                avg_import_cost: { $ne: null, $gt: 0 },
+                price: { $gt: 0 }  // Prevent divide by zero
+            }
+        },
 
         {
             $project: {
@@ -350,7 +384,12 @@ export async function getHighestMarginProducts(limit = 10) {
  */
 export async function getLowestMarginProducts(limit = 10) {
     const results = await DimMenuItem.aggregate([
-        { $match: { avg_import_cost: { $ne: null, $gt: 0 } } },
+        {
+            $match: {
+                avg_import_cost: { $ne: null, $gt: 0 },
+                price: { $gt: 0 }  // Prevent divide by zero
+            }
+        },
 
         {
             $project: {

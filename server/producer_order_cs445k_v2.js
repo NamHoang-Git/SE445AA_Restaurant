@@ -54,8 +54,48 @@ async function produceOrders(runType = 'full') {
 
         for (const order of orders) {
             try {
+                // CS445K format: Each order is a single product (no orderItems array)
+                // SE445K format: orderItems array
                 const orderItems = order.orderItems || [];
 
+                // If no orderItems array, treat the order itself as a single item (CS445K format)
+                if (orderItems.length === 0) {
+                    // CS445K: order has productId directly
+                    const product_id = order.productId?.toString() || order.product_id?.toString();
+
+                    if (!product_id) {
+                        console.warn(`⚠️  Skipping order ${order._id}: no product_id found`);
+                        recordsFailed++;
+                        continue;
+                    }
+
+                    const message = {
+                        order_id: order._id.toString(),
+                        customer_id: order.userId?.toString() || '',
+                        product_id: product_id,
+                        product_name: order.product_details?.name || order.productName || '',
+                        quantity: order.quantity || 1,
+                        unit_price: order.price || order.unit_price || 0,
+                        subtotal: order.subTotalAmt || order.subtotal || order.totalPrice || 0,
+                        discount: order.voucherDiscount || order.discount || 0,
+                        total: order.totalAmt || order.total_amount || order.subTotalAmt || 0,
+                        payment_method: order.payment_method || 'cash',
+                        payment_status: order.payment_status || 'pending',
+                        order_status: order.status || order.order_status || 'pending',
+                        ordered_at: order.createdAt || new Date(),
+                        completed_at: order.updatedAt || null,
+                        voucher_id: order.voucherId?.toString() || null,
+                        table_number: order.tableNumber || null
+                    };
+
+                    channel.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(message)), {
+                        persistent: true
+                    });
+                    recordsProcessed++;
+                    continue;
+                }
+
+                // SE445K format: Process orderItems array
                 for (const item of orderItems) {
                     // Support both productDetails (camelCase) and product_details (snake_case)
                     const productDetails = item.productDetails || item.product_details || {};

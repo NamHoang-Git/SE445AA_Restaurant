@@ -126,7 +126,8 @@ export function cleanUserData(userData) {
 
     if (cleaned.name) {
         cleaned.name = normalizeName(cleaned.name);
-        cleaned.name = expandAbbreviations(cleaned.name);
+        // Disable expandAbbreviations - causes issues with full names
+        // cleaned.name = expandAbbreviations(cleaned.name);
     }
 
     if (cleaned.email) {
