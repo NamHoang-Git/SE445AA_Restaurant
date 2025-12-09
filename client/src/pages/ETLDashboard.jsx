@@ -46,6 +46,11 @@ function ETLDashboard() {
             }
 
             if (analyticsRes.data?.success) {
+                console.log('📊 Analytics Data:', analyticsRes.data.data);
+                console.log(
+                    '👥 Top Customers:',
+                    analyticsRes.data.data.topCustomers
+                );
                 setAnalytics(analyticsRes.data.data);
             }
 
@@ -111,8 +116,83 @@ function ETLDashboard() {
             legend: {
                 position: 'bottom',
             },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            // Format as currency
+                            label += new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
+                            }).format(context.parsed.y);
+                        }
+                        return label;
+                    },
+                },
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function (value) {
+                        // Format Y-axis as abbreviated numbers
+                        if (value >= 1000000) {
+                            return (value / 1000000).toFixed(1) + 'M';
+                        } else if (value >= 1000) {
+                            return (value / 1000).toFixed(0) + 'K';
+                        }
+                        return value;
+                    },
+                },
+            },
         },
     };
+
+    // Top Customers Chart Data
+    const topCustomersChartData = analytics?.topCustomers
+        ? {
+              labels: analytics.topCustomers.map((c) => c.name),
+              datasets: [
+                  {
+                      label: 'Doanh thu (VNĐ)',
+                      data: analytics.topCustomers.map((c) => c.totalRevenue),
+                      backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      borderWidth: 1,
+                  },
+              ],
+          }
+        : null;
+
+    // Customer Tier Distribution Chart Data
+    const tierDistributionChartData = analytics?.customerTiers
+        ? {
+              labels: analytics.customerTiers.map((t) => t.tier),
+              datasets: [
+                  {
+                      data: analytics.customerTiers.map((t) => t.count),
+                      backgroundColor: [
+                          'rgba(205, 127, 50, 0.6)', // BRONZE
+                          'rgba(192, 192, 192, 0.6)', // SILVER
+                          'rgba(255, 215, 0, 0.6)', // GOLD
+                          'rgba(229, 228, 226, 0.6)', // PLATINUM
+                      ],
+                      borderColor: [
+                          'rgba(205, 127, 50, 1)',
+                          'rgba(192, 192, 192, 1)',
+                          'rgba(255, 215, 0, 1)',
+                          'rgba(229, 228, 226, 1)',
+                      ],
+                      borderWidth: 1,
+                  },
+              ],
+          }
+        : null;
 
     return (
         <div className="p-4 space-y-6">
@@ -163,7 +243,7 @@ function ETLDashboard() {
                     {/* Best Sellers Chart */}
                     <div className="border rounded-md p-4">
                         <h2 className="text-lg font-semibold mb-3">
-                            Món bán chạy nhất (Top 3)
+                            Món bán chạy nhất (Top 5)
                         </h2>
                         <div className="h-64">
                             {bestSellersChartData ? (
@@ -178,6 +258,80 @@ function ETLDashboard() {
                             )}
                         </div>
                     </div>
+
+                    {/* Customer Analytics Section */}
+                    <section className="border rounded-md p-4">
+                        <h2 className="text-lg font-semibold mb-4">
+                            Phân tích dữ liệu khách hàng
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Top Customers Chart */}
+                            <div className="border rounded p-4">
+                                <h3 className="font-medium mb-3">
+                                    Top 5 Khách hàng (Doanh thu)
+                                </h3>
+                                <div className="h-64">
+                                    {topCustomersChartData ? (
+                                        <Bar
+                                            data={topCustomersChartData}
+                                            options={chartOptions}
+                                        />
+                                    ) : (
+                                        <div className="text-gray-500 text-sm">
+                                            Chưa có dữ liệu
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Tier Distribution Chart */}
+                            <div className="border rounded p-4">
+                                <h3 className="font-medium mb-3">
+                                    Phân bố theo Tier
+                                </h3>
+                                <div className="h-64">
+                                    {tierDistributionChartData ? (
+                                        <Pie
+                                            data={tierDistributionChartData}
+                                            options={chartOptions}
+                                        />
+                                    ) : (
+                                        <div className="text-gray-500 text-sm">
+                                            Chưa có dữ liệu
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Purchase Frequency Stats */}
+                        {analytics?.purchaseFrequency && (
+                            <div className="mt-4 grid grid-cols-2 gap-3">
+                                <div className="border rounded p-3">
+                                    <div className="text-sm text-gray-600">
+                                        Trung bình đơn/khách
+                                    </div>
+                                    <div className="text-2xl font-semibold">
+                                        {analytics.purchaseFrequency.avgOrdersPerCustomer.toFixed(
+                                            1
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="border rounded p-3">
+                                    <div className="text-sm text-gray-600">
+                                        Khách hàng hoạt động
+                                    </div>
+                                    <div className="text-2xl font-semibold">
+                                        {
+                                            analytics.purchaseFrequency
+                                                .totalActiveCustomers
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </section>
                 </div>
             )}
 
@@ -214,7 +368,7 @@ function ETLDashboard() {
 
             {/* DATA WAREHOUSE */}
             <section className="border rounded-md p-4">
-                <h2 className="text-lg font-semibold mb-3">Data Warehouse</h2>
+                <h2 className="text-lg font-semibold mb-3">Kho dữ liệu</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                     <div className="border rounded p-3">
                         <div className="font-medium">dim_customers</div>

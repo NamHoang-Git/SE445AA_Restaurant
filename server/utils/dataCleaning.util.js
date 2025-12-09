@@ -152,18 +152,25 @@ export function cleanUserData(userData) {
     const cleaned = { ...userData };
 
     if (cleaned.name) {
-        // Step 1: Remove extra spaces and lowercase
-        let name = removeExtraSpaces(cleaned.name).toLowerCase();
+        // Step 1: Split camelCase (e.g., "VKhiem" → "V Khiem", "NguyenVanA" → "Nguyen Van A")
+        // Insert space before uppercase letters that follow lowercase OR before lowercase that follows uppercase
+        let name = cleaned.name
+            .replace(/([a-z])([A-Z])/g, '$1 $2')  // lowercase + uppercase
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2');  // uppercase + uppercase + lowercase (VKh → V Kh)
 
-        // Step 2: Remove numbers and special characters (keep letters, spaces, Vietnamese diacritics)
-        // Keep: a-z, Vietnamese letters (à, á, ả, ã, ạ, ă, ằ, ắ, ẳ, ẵ, ặ, â, ầ, ấ, ẩ, ẫ, ậ, đ, è, é, ẻ, ẽ, ẹ, ê, ề, ế, ể, ễ, ệ, ì, í, ỉ, ĩ, ị, ò, ó, ỏ, õ, ọ, ô, ồ, ố, ổ, ỗ, ộ, ơ, ờ, ớ, ở, ỡ, ợ, ù, ú, ủ, ũ, ụ, ư, ừ, ứ, ử, ữ, ự, ỳ, ý, ỷ, ỹ, ỵ), spaces, dots
+        // Step 2: Remove extra spaces and lowercase
+        name = removeExtraSpaces(name).toLowerCase();
+
+        // Step 3: Remove numbers and special characters (keep letters, spaces, Vietnamese diacritics)
+        // Keep: a-z, Vietnamese letters (à, á, ả,ã, ạ, ă,ằ,ắ,ẳ,ẵ,ặ, â,ầ,ấ,ẩ,ẫ,ậ, đ, è, é, ẻ,ẽ, ẹ, ê,ề,ế,ể,ễ,ệ, ì, í, ỉ,ĩ, ị, ò, ó, ỏ,õ, ọ, ô,ồ,ố,ổ,ỗ,ộ, ơ,ờ,ớ,ở,ỡ,ợ, ù, ú, ủ,ũ, ụ, ư,ừ,ứ,ử,ữ,ự, ỳ, ý, ỷ,ỹ, ỵ), spaces, dots
         name = name.replace(/[^a-zàáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ\s.]/g, '');
 
-        // Step 3: Expand abbreviations (while lowercase)
+        // Step 4: Expand abbreviations (while lowercase)
         // "lê t nga" → "lê thị nga"
+        // "tran thi xuan" → "trần thị xuân"
         name = expandAbbreviations(name);
 
-        // Step 4: Capitalize each word (Unicode-aware) - AFTER expansion
+        // Step 5: Capitalize each word (Unicode-aware) - AFTER expansion
         // "lê thị nga" → "Lê Thị Nga"
         name = name
             .split(/\s+/)

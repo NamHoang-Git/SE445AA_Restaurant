@@ -16,15 +16,34 @@ export class CustomerTransformStrategy {
             }
         }
 
-        const docs = [...byCustomer.values()].map((u) => ({
-            customer_id: u.customer_id,
-            name: u.name,
-            email: u.email,
-            phone: u.phone,
-            tier: u.tier,
-            status: u.status,
-            created_at: u.created_at,
-        }));
+        const docs = [...byCustomer.values()].map((u) => {
+            // Map user role to customer tier
+            // If user has a role (employee), default to BRONZE
+            // Otherwise use the tier field if present
+            let customerTier = 'BRONZE';
+
+            if (u.tier) {
+                // Check if tier is a role (ADMIN, CASHIER, etc.)
+                const roles = ['ADMIN', 'MANAGER', 'CASHIER', 'CHEF', 'WAITER', 'TABLE', 'USER'];
+                if (roles.includes(u.tier)) {
+                    // Employee - default to BRONZE
+                    customerTier = 'BRONZE';
+                } else {
+                    // Already a customer tier
+                    customerTier = u.tier;
+                }
+            }
+
+            return {
+                customer_id: u.customer_id,
+                name: u.name,
+                email: u.email,
+                phone: u.phone,
+                tier: customerTier,
+                status: u.status,
+                created_at: u.created_at,
+            };
+        });
 
         return docs;
     }

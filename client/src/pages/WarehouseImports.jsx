@@ -33,7 +33,7 @@ export default function WarehouseImports() {
                 setImports(response.data.data);
             }
         } catch (error) {
-            toast.error('Failed to fetch imports');
+            toast.error('Không thể tải danh sách nhập kho');
         } finally {
             setLoading(false);
         }
@@ -53,14 +53,12 @@ export default function WarehouseImports() {
             });
 
             if (response.data.success) {
-                toast.success(
-                    editingImport ? 'Import updated!' : 'Import created!'
-                );
+                toast.success(editingImport ? 'Đã cập nhật!' : 'Đã tạo mới!');
                 fetchImports();
                 resetForm();
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Operation failed');
+            toast.error(error.response?.data?.message || 'Thao tác thất bại');
         }
     };
 
@@ -79,16 +77,16 @@ export default function WarehouseImports() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this import?')) return;
+        if (!confirm('Bạn có chắc muốn xóa bản ghi nhập kho này?')) return;
 
         try {
             const response = await Axios(warehouseAPI.deleteImport(id));
             if (response.data.success) {
-                toast.success('Import deleted!');
+                toast.success('Đã xóa!');
                 fetchImports();
             }
         } catch (error) {
-            toast.error('Failed to delete import');
+            toast.error('Không thể xóa bản ghi nhập kho');
         }
     };
 
@@ -109,7 +107,7 @@ export default function WarehouseImports() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                Loading...
+                Đang tải...
             </div>
         );
     }
@@ -121,10 +119,10 @@ export default function WarehouseImports() {
                 <div>
                     <h1 className="text-3xl font-bold flex items-center gap-2">
                         <Package className="h-8 w-8" />
-                        Warehouse Imports
+                        Nhập kho
                     </h1>
                     <p className="text-gray-600 mt-1">
-                        Manage warehouse import records
+                        Quản lý bản ghi nhập kho
                     </p>
                 </div>
                 <button
@@ -132,7 +130,7 @@ export default function WarehouseImports() {
                     className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
                     <Plus className="h-5 w-5" />
-                    New Import
+                    Thêm mới
                 </button>
             </div>
 
@@ -140,7 +138,9 @@ export default function WarehouseImports() {
             {showForm && (
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-4">
-                        {editingImport ? 'Edit Import' : 'New Import'}
+                        {editingImport
+                            ? 'Chỉnh sửa Nhập kho'
+                            : 'Thêm Nhập kho mới'}
                     </h2>
                     <form
                         onSubmit={handleSubmit}
@@ -210,7 +210,7 @@ export default function WarehouseImports() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Quantity *
+                                Số lượng *
                             </label>
                             <input
                                 type="number"
@@ -224,12 +224,12 @@ export default function WarehouseImports() {
                                 className="w-full border rounded px-3 py-2"
                                 required
                                 min="0"
-                                placeholder="e.g., 200"
+                                placeholder="Ví dụ: 200"
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Unit Cost (VND) *
+                                Đơn giá (VND) *
                             </label>
                             <input
                                 type="number"
@@ -243,12 +243,12 @@ export default function WarehouseImports() {
                                 className="w-full border rounded px-3 py-2"
                                 required
                                 min="0"
-                                placeholder="e.g., 35000"
+                                placeholder="Ví dụ: 35000"
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Supplier
+                                Nhà cung cấp
                             </label>
                             <input
                                 type="text"
@@ -260,12 +260,12 @@ export default function WarehouseImports() {
                                     })
                                 }
                                 className="w-full border rounded px-3 py-2"
-                                placeholder="e.g., Rice Supplier A"
+                                placeholder="Ví dụ: Nhà cung cấp gạo A"
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Warehouse Location
+                                Vị trí kho
                             </label>
                             <select
                                 value={formData.warehouse_location}
@@ -284,7 +284,7 @@ export default function WarehouseImports() {
                         </div>
                         <div className="col-span-2">
                             <label className="block text-sm font-medium mb-1">
-                                Notes
+                                Ghi chú
                             </label>
                             <textarea
                                 value={formData.notes}
@@ -296,7 +296,7 @@ export default function WarehouseImports() {
                                 }
                                 className="w-full border rounded px-3 py-2"
                                 rows="2"
-                                placeholder="Additional notes..."
+                                placeholder="Ghi chú thêm..."
                             />
                         </div>
                         <div className="col-span-2 flex gap-2">
@@ -304,14 +304,14 @@ export default function WarehouseImports() {
                                 type="submit"
                                 className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
                             >
-                                {editingImport ? 'Update' : 'Create'}
+                                {editingImport ? 'Cập nhật' : 'Tạo mới'}
                             </button>
                             <button
                                 type="button"
                                 onClick={resetForm}
                                 className="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400"
                             >
-                                Cancel
+                                Hủy
                             </button>
                         </div>
                     </form>
@@ -319,33 +319,33 @@ export default function WarehouseImports() {
             )}
 
             {/* Table */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-background rounded-lg shadow-md overflow-auto">
                 <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-foreground/20 text-foreground">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Product ID
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Mã sản phẩm
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Product Name
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Tên sản phẩm
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Quantity
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Số lượng
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Unit Cost
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Đơn giá
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Total Cost
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Tổng giá
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Supplier
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Nhà cung cấp
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Date
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Ngày nhập
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Actions
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase">
+                                Thao tác
                             </th>
                         </tr>
                     </thead>
@@ -356,8 +356,8 @@ export default function WarehouseImports() {
                                     colSpan="8"
                                     className="px-6 py-8 text-center text-gray-500"
                                 >
-                                    No imports found. Click "New Import" to add
-                                    one.
+                                    Chưa có bản ghi nhập kho. Nhấn "Thêm mới" để
+                                    thêm.
                                 </td>
                             </tr>
                         ) : (

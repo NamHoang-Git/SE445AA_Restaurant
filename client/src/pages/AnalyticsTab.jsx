@@ -96,23 +96,23 @@ export default function AnalyticsTab() {
         <div className="space-y-6 p-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
+                <Card className="py-6">
                     <CardHeader className="pb-2">
-                        <CardDescription>Products Analyzed</CardDescription>
+                        <CardDescription>Sản phẩm đã phân tích</CardDescription>
                         <CardTitle className="text-3xl">
                             {profitSummary?.products_analyzed || 0}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-xs text-muted-foreground">
-                            With warehouse cost data
+                            Có dữ liệu chi phí kho
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="py-6">
                     <CardHeader className="pb-2">
-                        <CardDescription>Profit Margin</CardDescription>
+                        <CardDescription>Tỷ suất lợi nhuận</CardDescription>
                         <CardTitle className="text-3xl text-green-600">
                             {profitSummary?.overall_profit_margin?.toFixed(1) ||
                                 0}
@@ -121,14 +121,14 @@ export default function AnalyticsTab() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-xs text-muted-foreground">
-                            Average across all products
+                            Trung bình tất cả sản phẩm
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="py-6">
                     <CardHeader className="pb-2">
-                        <CardDescription>Data Quality</CardDescription>
+                        <CardDescription>Chất lượng dữ liệu</CardDescription>
                         <CardTitle className="text-3xl text-blue-600">
                             {qualityMetrics?.quality_score?.toFixed(1) || 0}%
                         </CardTitle>
@@ -140,9 +140,9 @@ export default function AnalyticsTab() {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="py-6">
                     <CardHeader className="pb-2">
-                        <CardDescription>Integration Rate</CardDescription>
+                        <CardDescription>Tỷ lệ tích hợp</CardDescription>
                         <CardTitle className="text-3xl text-purple-600">
                             {integrationStatus?.merge_success_rate?.toFixed(
                                 1
@@ -152,7 +152,7 @@ export default function AnalyticsTab() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-xs text-muted-foreground">
-                            Products with warehouse data
+                            Sản phẩm có dữ liệu kho
                         </p>
                     </CardContent>
                 </Card>
@@ -161,11 +161,13 @@ export default function AnalyticsTab() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Profit Margin Chart */}
-                <Card>
+                <Card className="py-6">
                     <CardHeader>
-                        <CardTitle>Top 5 Products by Profit Margin</CardTitle>
+                        <CardTitle>
+                            Top 5 Sản phẩm theo Tỷ suất Lợi nhuận
+                        </CardTitle>
                         <CardDescription>
-                            Products with highest profit margins
+                            Sản phẩm có tỷ suất lợi nhuận cao nhất
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -184,7 +186,7 @@ export default function AnalyticsTab() {
                                 <Bar
                                     dataKey="profit_margin_percent"
                                     fill="#8884d8"
-                                    name="Profit Margin %"
+                                    name="Tỷ suất lợi nhuận %"
                                 />
                             </BarChart>
                         </ResponsiveContainer>
@@ -192,11 +194,11 @@ export default function AnalyticsTab() {
                 </Card>
 
                 {/* Integration Status Pie Chart */}
-                <Card>
+                <Card className="py-6">
                     <CardHeader>
-                        <CardTitle>Data Integration Status</CardTitle>
+                        <CardTitle>Trạng thái Tích hợp Dữ liệu</CardTitle>
                         <CardDescription>
-                            Products with vs without warehouse data
+                            Sản phẩm có/không có dữ liệu kho
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -205,13 +207,13 @@ export default function AnalyticsTab() {
                                 <Pie
                                     data={[
                                         {
-                                            name: 'With Warehouse Data',
+                                            name: 'Có dữ liệu kho',
                                             value:
                                                 integrationStatus?.products_with_warehouse_data ||
                                                 0,
                                         },
                                         {
-                                            name: 'Without Warehouse Data',
+                                            name: 'Không có dữ liệu kho',
                                             value:
                                                 (integrationStatus?.total_products ||
                                                     0) -
@@ -246,34 +248,32 @@ export default function AnalyticsTab() {
             </div>
 
             {/* Data Quality Details */}
-            <Card>
+            <Card className="py-6">
                 <CardHeader>
-                    <CardTitle>Data Quality Metrics</CardTitle>
+                    <CardTitle>Chỉ số Chất lượng Dữ liệu</CardTitle>
                     <CardDescription>
-                        ETL pipeline data quality statistics
+                        Thống kê chất lượng dữ liệu ETL pipeline
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Total Records
+                                Tổng số bản ghi
                             </p>
                             <p className="text-2xl font-bold">
                                 {qualityMetrics?.total_records_processed || 0}
                             </p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">
-                                Errors
-                            </p>
+                            <p className="text-sm text-muted-foreground">Lỗi</p>
                             <p className="text-2xl font-bold text-red-600">
                                 {qualityMetrics?.total_errors || 0}
                             </p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Error Rate
+                                Tỷ lệ lỗi
                             </p>
                             <p className="text-2xl font-bold">
                                 {qualityMetrics?.error_rate?.toFixed(2) || 0}%
@@ -281,7 +281,7 @@ export default function AnalyticsTab() {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Cleaned Records
+                                Bản ghi đã làm sạch
                             </p>
                             <p className="text-2xl font-bold text-green-600">
                                 {qualityMetrics?.cleaned_records || 0}
@@ -292,18 +292,18 @@ export default function AnalyticsTab() {
             </Card>
 
             {/* Integration Details */}
-            <Card>
+            <Card className="py-6">
                 <CardHeader>
-                    <CardTitle>Integration Statistics</CardTitle>
+                    <CardTitle>Thống kê Tích hợp</CardTitle>
                     <CardDescription>
-                        Data warehouse record counts
+                        Số lượng bản ghi trong kho dữ liệu
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Customers
+                                Khách hàng
                             </p>
                             <p className="text-2xl font-bold">
                                 {integrationStatus?.dw_counts?.customers || 0}
@@ -311,7 +311,7 @@ export default function AnalyticsTab() {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Menu Items
+                                Món ăn
                             </p>
                             <p className="text-2xl font-bold">
                                 {integrationStatus?.dw_counts?.menu_items || 0}
@@ -319,7 +319,7 @@ export default function AnalyticsTab() {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">
-                                Order Items
+                                Đơn hàng
                             </p>
                             <p className="text-2xl font-bold">
                                 {integrationStatus?.dw_counts?.order_items || 0}

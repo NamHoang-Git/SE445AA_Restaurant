@@ -117,7 +117,7 @@ export async function getAnalytics(req, res) {
                     $group: {
                         _id: "$product_id",
                         totalQuantity: { $sum: "$quantity" },
-                        totalRevenue: { $sum: { $multiply: ["$quantity", "$price"] } }
+                        totalRevenue: { $sum: { $multiply: ["$quantity", "$unit_price"] } }
                     }
                 },
                 { $sort: { totalQuantity: -1 } },
@@ -143,7 +143,7 @@ export async function getAnalytics(req, res) {
                 {
                     $group: {
                         _id: "$product_id",
-                        totalRevenue: { $sum: { $multiply: ["$quantity", "$price"] } }
+                        totalRevenue: { $sum: { $multiply: ["$quantity", "$unit_price"] } }
                     }
                 },
                 { $sort: { totalRevenue: -1 } },
@@ -157,11 +157,90 @@ export async function getAnalytics(req, res) {
             revenue: item.totalRevenue
         }));
 
+        // ========== CUSTOMER ANALYTICS ==========
+
+        // Top 5 Customers by Revenue
+        const topCustomers = await db
+            .collection("dw_fact_order_items")
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$customer_id",
+                        totalRevenue: { $sum: { $multiply: ["$quantity", "$unit_price"] } },
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                { $sort: { totalRevenue: -1 } },
+                { $limit: 5 }
+            ])
+            .toArray();
+
+        // Get customer names
+        const dimCustomers = await db.collection("dw_dim_customers").find({}).toArray();
+        const customerNameMap = new Map(dimCustomers.map(c => [c.customer_id, c.name]));
+
+        const topCustomersData = topCustomers.map(item => ({
+            customer_id: item._id,
+            name: customerNameMap.get(item._id) || 'Unknown',
+            totalRevenue: item.totalRevenue,
+            orderCount: item.orderCount
+        }));
+
+        // Customer Tier Distribution
+        const customerTiers = await db
+            .collection("dw_dim_customers")
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$tier",
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ])
+            .toArray();
+
+        const customerTiersData = customerTiers.map(item => ({
+            tier: item._id || 'BRONZE',
+            count: item.count
+        }));
+
+        // Purchase Frequency
+        const purchaseFrequency = await db
+            .collection("dw_fact_order_items")
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$customer_id",
+                        orderCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalCustomers: { $sum: 1 },
+                        totalOrders: { $sum: "$orderCount" }
+                    }
+                }
+            ])
+            .toArray();
+
+        const purchaseFrequencyData = purchaseFrequency[0] ? {
+            avgOrdersPerCustomer: purchaseFrequency[0].totalOrders / purchaseFrequency[0].totalCustomers,
+            totalActiveCustomers: purchaseFrequency[0].totalCustomers
+        } : {
+            avgOrdersPerCustomer: 0,
+            totalActiveCustomers: 0
+        };
+
         return res.json({
             success: true,
             data: {
                 bestSellers: bestSellersData,
-                topRevenue: topRevenueData
+                topRevenue: topRevenueData,
+                topCustomers: topCustomersData,
+                customerTiers: customerTiersData,
+                purchaseFrequency: purchaseFrequencyData
             }
         });
     } catch (error) {

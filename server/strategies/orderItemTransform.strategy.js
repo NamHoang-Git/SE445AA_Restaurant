@@ -16,13 +16,20 @@ export class OrderItemTransformStrategy {
             const customer_key = o.customer_id ? customerMap.get(o.customer_id) : null;
             const menu_item_key = menuItemMap.get(o.product_id) || null;
 
+            // Calculate unit_price if missing or 0
+            // unit_price = subtotal / quantity (before discount)
+            let unitPrice = o.unit_price || 0;
+            if (unitPrice === 0 && o.subtotal && o.quantity > 0) {
+                unitPrice = o.subtotal / o.quantity;
+            }
+
             docs.push({
                 order_id: o.order_id,
                 customer_id: o.customer_id,
                 product_id: o.product_id,
                 product_name: o.product_name,
                 quantity: o.quantity,
-                unit_price: o.unit_price,
+                unit_price: unitPrice,
                 subtotal: o.subtotal,
                 discount: o.discount,
                 total: o.total,
