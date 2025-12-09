@@ -4,6 +4,7 @@ import amqp from 'amqplib';
 import CS445KUser from './models/cs445k-source/user.source.model.js';
 import { getLastRunTimestamp, updateEtlMetadata, markEtlRunning } from './utils/etl_helper.js';
 import connectDB from './config/connectDB.js';
+import { cleanUserData } from './utils/dataCleaning.util.js';
 
 const QUEUE_NAME = 'staging_users';
 const SOURCE_NAME = 'users';
@@ -61,11 +62,18 @@ async function produceUsers(runType = 'full') {
         // Publish users
         for (const user of users) {
             try {
-                const message = {
-                    customer_id: user._id.toString(),
+                // Clean user data BEFORE sending to queue
+                const cleaned = cleanUserData({
                     name: user.name || '',
                     email: user.email || '',
-                    phone: user.mobile || user.phone || '',
+                    phone: user.mobile || user.phone || ''
+                });
+
+                const message = {
+                    customer_id: user._id.toString(),
+                    name: cleaned.name,
+                    email: cleaned.email,
+                    phone: cleaned.phone,
                     tier: user.role || 'BRONZE',
                     status: user.status || 'active',
                     created_at: user.createdAt || new Date()

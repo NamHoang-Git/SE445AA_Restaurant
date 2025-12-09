@@ -65,7 +65,7 @@ export async function getEtlSummary(req, res) {
  */
 export async function runEtlPipeline(req, res) {
     try {
-        const batPath = path.join(process.cwd(), "run_etl_all.bat");
+        const batPath = path.join(process.cwd(), "run_etl_v2.bat");
 
         // Wrap path in quotes to handle spaces in directory names
         const command = `"${batPath}"`;

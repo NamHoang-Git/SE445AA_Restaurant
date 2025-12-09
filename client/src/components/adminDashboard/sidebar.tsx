@@ -26,6 +26,7 @@ import logo from '@/assets/logo.png';
 
 const navigation = [
     { name: 'Báo cáo', href: '/admin/reports', icon: BarChart2 },
+    { name: 'Kho', href: '/admin/warehouse', icon: Package },
 ];
 
 const bottomNavigation = [

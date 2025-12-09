@@ -44,6 +44,11 @@ const UserMenu: React.FC<UserMenuProps> = ({ close, menuTriggerRef }) => {
             icon: <BarChart2 size={14} className="mb-0.5" />,
             label: 'Báo cáo',
         },
+        {
+            href: '/admin/warehouse',
+            icon: <Package size={14} className="mb-0.5" />,
+            label: 'Kho',
+        },
     ];
 
     // Function to fetch user points

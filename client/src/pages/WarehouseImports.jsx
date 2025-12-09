@@ -4,6 +4,7 @@ import Axios from '@/utils/Axios';
 import warehouseAPI from '@/common/warehouse_api';
 import toast from 'react-hot-toast';
 import { Plus, Edit, Trash2, Package } from 'lucide-react';
+import ProductAutocomplete from '@/components/ProductAutocomplete';
 
 export default function WarehouseImports() {
     const [imports, setImports] = useState([]);
@@ -145,6 +146,29 @@ export default function WarehouseImports() {
                         onSubmit={handleSubmit}
                         className="grid grid-cols-2 gap-4"
                     >
+                        {/* Product Autocomplete - Replaces Product ID and Name inputs */}
+                        <div className="col-span-2">
+                            <ProductAutocomplete
+                                value={formData.product_name_raw}
+                                onChange={(value) => {
+                                    // Manual input
+                                    setFormData({
+                                        ...formData,
+                                        product_name_raw: value,
+                                    });
+                                }}
+                                onSelect={(product) => {
+                                    // Dropdown selection
+                                    setFormData({
+                                        ...formData,
+                                        product_id: product.product_id,
+                                        product_name_raw: product.product_name,
+                                    });
+                                }}
+                            />
+                        </div>
+
+                        {/* Product ID - Auto-filled or manual */}
                         <div>
                             <label className="block text-sm font-medium mb-1">
                                 Product ID *
@@ -158,14 +182,17 @@ export default function WarehouseImports() {
                                         product_id: e.target.value,
                                     })
                                 }
-                                className="w-full border rounded px-3 py-2"
+                                className="w-full border rounded px-3 py-2 bg-gray-50"
                                 required
-                                placeholder="e.g., RICE01"
+                                placeholder="Chọn sản phẩm hoặc nhập ID..."
                             />
+                            <p className="text-xs text-amber-600 mt-1">
+                                ⚠️ Tên sẽ tự động đồng bộ từ CS445K khi chạy ETL
+                            </p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Product Name *
+                                Tên sản phẩm (hiển thị) *
                             </label>
                             <input
                                 type="text"
@@ -176,9 +203,9 @@ export default function WarehouseImports() {
                                         product_name_raw: e.target.value,
                                     })
                                 }
-                                className="w-full border rounded px-3 py-2"
+                                className="w-full border rounded px-3 py-2 bg-gray-50"
                                 required
-                                placeholder="e.g., Rice New"
+                                placeholder="Tự động điền hoặc nhập thủ công..."
                             />
                         </div>
                         <div>

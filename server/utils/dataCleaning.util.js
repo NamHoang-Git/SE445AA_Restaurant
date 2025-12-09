@@ -29,6 +29,8 @@ export function removeExtraSpaces(str) {
  * Normalize name: proper case, remove extra spaces
  * "  NGUYEN van a  " → "Nguyen Van A"
  * "le t nga" → "Le T Nga"
+ * "lê hoàng cường" → "Lê Hoàng Cường"
+ * "nguyễn v xuân" → "Nguyễn V Xuân"
  */
 export function normalizeName(str) {
     if (!str || typeof str !== 'string') return '';
@@ -36,8 +38,16 @@ export function normalizeName(str) {
     // Remove extra spaces and convert to lowercase
     let cleaned = removeExtraSpaces(str).toLowerCase();
 
-    // Capitalize first letter of each word
-    cleaned = cleaned.replace(/(^|\s)\S/g, (letter) => letter.toUpperCase());
+    // Capitalize first letter of each word (Unicode-aware)
+    // Split by spaces, capitalize each word, then join back
+    cleaned = cleaned
+        .split(/\s+/)
+        .map(word => {
+            if (!word) return word;
+            // Use Unicode-aware charAt to handle Vietnamese diacritics
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(' ');
 
     return cleaned;
 }
@@ -73,26 +83,35 @@ export function normalizeEmail(str) {
 
 /**
  * Expand abbreviations in Vietnamese names
- * "Ng V A" → "Nguyen Van A"
- * "L T Nga" → "Le Thi Nga"
- * "Tr. Thi B" → "Tran Thi B"
+ * "ng v a" → "nguyễn văn a"
+ * "l t nga" → "lê thị nga"
+ * "tr. thi b" → "trần thị b"
  */
 export function expandAbbreviations(name) {
     if (!name || typeof name !== 'string') return '';
 
-    let expanded = name;
+    // Split by spaces, expand each word, then join back
+    const words = name.split(/\s+/);
 
-    // Iterate through abbreviation rules
-    for (const [fullForm, abbreviations] of Object.entries(abbreviationRules)) {
-        for (const abbr of abbreviations) {
-            // Create regex to match abbreviation as whole word
-            // Match at start of string or after space, followed by space or dot or end
-            const regex = new RegExp(`\\b${escapeRegex(abbr)}(?=\\s|\\.|$)`, 'gi');
-            expanded = expanded.replace(regex, fullForm);
+    const expanded = words.map(word => {
+        // Remove trailing dots for matching
+        const cleanWord = word.replace(/\.$/, '');
+
+        // Check if this word matches any abbreviation
+        for (const [fullForm, abbreviations] of Object.entries(abbreviationRules)) {
+            for (const abbr of abbreviations) {
+                // Exact match (case-insensitive, ignoring trailing dots)
+                if (cleanWord.toLowerCase() === abbr.replace(/\.$/, '').toLowerCase()) {
+                    return fullForm;
+                }
+            }
         }
-    }
 
-    return expanded;
+        // No match found, return original word
+        return word;
+    });
+
+    return expanded.join(' ');
 }
 
 /**
@@ -105,6 +124,7 @@ function escapeRegex(str) {
 /**
  * Clean product name: remove extra spaces, proper case
  * "  COM TAM  " → "Com Tam"
+ * "cơm tấm sườn" → "Cơm Tấm Sườn"
  */
 export function cleanProductName(str) {
     if (!str || typeof str !== 'string') return '';
@@ -112,8 +132,15 @@ export function cleanProductName(str) {
     // Remove extra spaces
     let cleaned = removeExtraSpaces(str);
 
-    // Convert to proper case (first letter of each word capitalized)
-    cleaned = cleaned.toLowerCase().replace(/(^|\s)\S/g, (letter) => letter.toUpperCase());
+    // Convert to proper case (Unicode-aware)
+    cleaned = cleaned
+        .toLowerCase()
+        .split(/\s+/)
+        .map(word => {
+            if (!word) return word;
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(' ');
 
     return cleaned;
 }
@@ -125,9 +152,28 @@ export function cleanUserData(userData) {
     const cleaned = { ...userData };
 
     if (cleaned.name) {
-        cleaned.name = normalizeName(cleaned.name);
-        // Disable expandAbbreviations - causes issues with full names
-        // cleaned.name = expandAbbreviations(cleaned.name);
+        // Step 1: Remove extra spaces and lowercase
+        let name = removeExtraSpaces(cleaned.name).toLowerCase();
+
+        // Step 2: Remove numbers and special characters (keep letters, spaces, Vietnamese diacritics)
+        // Keep: a-z, Vietnamese letters (à, á, ả, ã, ạ, ă, ằ, ắ, ẳ, ẵ, ặ, â, ầ, ấ, ẩ, ẫ, ậ, đ, è, é, ẻ, ẽ, ẹ, ê, ề, ế, ể, ễ, ệ, ì, í, ỉ, ĩ, ị, ò, ó, ỏ, õ, ọ, ô, ồ, ố, ổ, ỗ, ộ, ơ, ờ, ớ, ở, ỡ, ợ, ù, ú, ủ, ũ, ụ, ư, ừ, ứ, ử, ữ, ự, ỳ, ý, ỷ, ỹ, ỵ), spaces, dots
+        name = name.replace(/[^a-zàáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ\s.]/g, '');
+
+        // Step 3: Expand abbreviations (while lowercase)
+        // "lê t nga" → "lê thị nga"
+        name = expandAbbreviations(name);
+
+        // Step 4: Capitalize each word (Unicode-aware) - AFTER expansion
+        // "lê thị nga" → "Lê Thị Nga"
+        name = name
+            .split(/\s+/)
+            .map(word => {
+                if (!word) return word;
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            })
+            .join(' ');
+
+        cleaned.name = name;
     }
 
     if (cleaned.email) {
